@@ -1,0 +1,144 @@
+{
+  "reminders": [
+    {
+      "id": 1,
+      "title": "Submit expense report",
+      "description": "Submit monthly expense report before end of day deadline",
+      "remind_at": "2025-10-29T15:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T09:00:00",
+      "updated_at": "2025-10-28T09:00:00"
+    },
+    {
+      "id": 2,
+      "title": "Call dentist to schedule appointment",
+      "description": "Schedule 6-month dental cleaning appointment",
+      "remind_at": "2025-10-30T10:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-27T11:30:00",
+      "updated_at": "2025-10-27T11:30:00"
+    },
+    {
+      "id": 3,
+      "title": "Review and sign contract",
+      "description": "Review the vendor contract and sign if everything looks good",
+      "remind_at": "2025-10-31T09:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-26T14:00:00",
+      "updated_at": "2025-10-26T14:00:00"
+    },
+    {
+      "id": 4,
+      "title": "Renew software license",
+      "description": "Renew Adobe Creative Cloud subscription before it expires",
+      "remind_at": "2025-11-01T08:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-25T10:00:00",
+      "updated_at": "2025-10-25T10:00:00"
+    },
+    {
+      "id": 5,
+      "title": "Send birthday card to Mom",
+      "description": "Don't forget Mom's birthday is coming up - mail card today!",
+      "remind_at": "2025-10-29T12:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T08:00:00",
+      "updated_at": "2025-10-28T08:00:00"
+    },
+    {
+      "id": 6,
+      "title": "Water office plants",
+      "description": "Weekly plant watering day - don't let them dry out!",
+      "remind_at": "2025-10-28T08:00:00",
+      "is_active": true,
+      "is_completed": true,
+      "created_at": "2025-10-27T16:00:00",
+      "updated_at": "2025-10-28T08:30:00"
+    },
+    {
+      "id": 7,
+      "title": "Prepare presentation slides",
+      "description": "Finish slides for Thursday's client meeting - at least 24 hours before",
+      "remind_at": "2025-11-02T09:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T13:00:00",
+      "updated_at": "2025-10-28T13:00:00"
+    },
+    {
+      "id": 8,
+      "title": "Backup important files",
+      "description": "Weekly reminder to backup all important project files to cloud storage",
+      "remind_at": "2025-11-03T18:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T10:00:00",
+      "updated_at": "2025-10-28T10:00:00"
+    },
+    {
+      "id": 9,
+      "title": "Order office supplies",
+      "description": "Restock printer paper, pens, and sticky notes before we run out",
+      "remind_at": "2025-11-04T14:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T11:00:00",
+      "updated_at": "2025-10-28T11:00:00"
+    },
+    {
+      "id": 10,
+      "title": "Follow up with recruiter",
+      "description": "Send follow-up email to recruiter about interview feedback",
+      "remind_at": "2025-10-25T10:00:00",
+      "is_active": false,
+      "is_completed": true,
+      "created_at": "2025-10-23T15:00:00",
+      "updated_at": "2025-10-25T10:30:00"
+    },
+    {
+      "id": 11,
+      "title": "Pay credit card bill",
+      "description": "Credit card payment is due - pay before late fees apply",
+      "remind_at": "2025-11-05T09:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T12:00:00",
+      "updated_at": "2025-10-28T12:00:00"
+    },
+    {
+      "id": 12,
+      "title": "Take out trash bins",
+      "description": "Trash pickup is Thursday morning - take bins to curb Wednesday night",
+      "remind_at": "2025-10-30T19:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-27T09:00:00",
+      "updated_at": "2025-10-27T09:00:00"
+    },
+    {
+      "id": 13,
+      "title": "RSVP to company holiday party",
+      "description": "Deadline to RSVP for the December holiday party is next week",
+      "remind_at": "2025-11-06T12:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T14:30:00",
+      "updated_at": "2025-10-28T14:30:00"
+    },
+    {
+      "id": 14,
+      "title": "Update emergency contacts",
+      "description": "Update emergency contact information in HR system",
+      "remind_at": "2025-11-07T10:00:00",
+      "is_active": true,
+      "is_completed": false,
+      "created_at": "2025-10-28T15:00:00",
+      "updated_at": "2025-10-28T15:00:00"
+    }
+  ]
+}

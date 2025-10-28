@@ -1,0 +1,169 @@
+{
+  "documents": [
+    {
+      "id": 1,
+      "title": "Q4 2024 Business Plan",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Business\\Q4_Business_Plan_2024.pdf",
+      "file_type": "pdf",
+      "description": "Comprehensive business plan for Q4 2024 including revenue targets, marketing strategies, and resource allocation",
+      "url": "",
+      "tags": "business,planning,q4,strategy",
+      "created_at": "2025-10-01T10:00:00",
+      "updated_at": "2025-10-01T10:00:00"
+    },
+    {
+      "id": 2,
+      "title": "API Documentation v2.5",
+      "file_path": "",
+      "file_type": "html",
+      "description": "Complete API documentation for version 2.5 with all endpoints, parameters, and examples",
+      "url": "https://api.docs.company.com/v2.5",
+      "tags": "api,documentation,technical,reference",
+      "created_at": "2025-09-28T14:30:00",
+      "updated_at": "2025-10-15T09:00:00"
+    },
+    {
+      "id": 3,
+      "title": "Employee Handbook 2025",
+      "file_path": "C:\\Users\\ajbir\\Documents\\HR\\Employee_Handbook_2025.pdf",
+      "file_type": "pdf",
+      "description": "Updated employee handbook with policies, benefits, code of conduct, and company guidelines",
+      "url": "",
+      "tags": "hr,handbook,policies,employee",
+      "created_at": "2025-01-05T08:00:00",
+      "updated_at": "2025-01-05T08:00:00"
+    },
+    {
+      "id": 4,
+      "title": "System Architecture Diagram",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Architecture\\System_Architecture_v3.png",
+      "file_type": "png",
+      "description": "High-level system architecture diagram showing all microservices, databases, and integrations",
+      "url": "",
+      "tags": "architecture,diagram,system,technical",
+      "created_at": "2025-10-10T11:00:00",
+      "updated_at": "2025-10-20T14:30:00"
+    },
+    {
+      "id": 5,
+      "title": "Product Roadmap 2025",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Product\\Roadmap_2025.xlsx",
+      "file_type": "xlsx",
+      "description": "Product roadmap spreadsheet with quarterly milestones, features, and release dates",
+      "url": "",
+      "tags": "product,roadmap,planning,2025",
+      "created_at": "2025-09-15T13:00:00",
+      "updated_at": "2025-10-22T10:00:00"
+    },
+    {
+      "id": 6,
+      "title": "Customer Onboarding Guide",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Guides\\Customer_Onboarding.docx",
+      "file_type": "docx",
+      "description": "Step-by-step guide for onboarding new customers including account setup, training materials, and support contacts",
+      "url": "",
+      "tags": "customer,onboarding,guide,training",
+      "created_at": "2025-08-20T09:30:00",
+      "updated_at": "2025-10-05T15:00:00"
+    },
+    {
+      "id": 7,
+      "title": "Brand Guidelines",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Marketing\\Brand_Guidelines_v4.pdf",
+      "file_type": "pdf",
+      "description": "Official brand guidelines including logo usage, color palette, typography, and design standards",
+      "url": "",
+      "tags": "branding,marketing,design,guidelines",
+      "created_at": "2025-07-10T10:00:00",
+      "updated_at": "2025-09-30T11:00:00"
+    },
+    {
+      "id": 8,
+      "title": "Security Compliance Checklist",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Security\\Compliance_Checklist_SOC2.pdf",
+      "file_type": "pdf",
+      "description": "SOC 2 compliance checklist with all requirements, controls, and audit preparation steps",
+      "url": "",
+      "tags": "security,compliance,soc2,audit",
+      "created_at": "2025-09-01T08:00:00",
+      "updated_at": "2025-10-18T14:00:00"
+    },
+    {
+      "id": 9,
+      "title": "Database Schema Documentation",
+      "file_path": "",
+      "file_type": "html",
+      "description": "Interactive database schema documentation with entity relationships and field descriptions",
+      "url": "https://dbdocs.company.com/schema",
+      "tags": "database,schema,documentation,technical",
+      "created_at": "2025-10-12T16:00:00",
+      "updated_at": "2025-10-25T09:00:00"
+    },
+    {
+      "id": 10,
+      "title": "Meeting Notes - Product Strategy",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Meetings\\Product_Strategy_2025-10-23.txt",
+      "file_type": "txt",
+      "description": "Meeting notes from product strategy session on October 23rd covering priorities and decisions",
+      "url": "",
+      "tags": "meeting,notes,product,strategy",
+      "created_at": "2025-10-23T15:30:00",
+      "updated_at": "2025-10-23T15:30:00"
+    },
+    {
+      "id": 11,
+      "title": "Financial Report Q3 2024",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Finance\\Q3_2024_Financial_Report.xlsx",
+      "file_type": "xlsx",
+      "description": "Q3 2024 financial report with revenue, expenses, profit/loss, and budget analysis",
+      "url": "",
+      "tags": "finance,quarterly,report,q3",
+      "created_at": "2025-10-02T09:00:00",
+      "updated_at": "2025-10-02T09:00:00"
+    },
+    {
+      "id": 12,
+      "title": "Deployment Runbook",
+      "file_path": "",
+      "file_type": "md",
+      "description": "Step-by-step deployment runbook for production releases including pre-checks, commands, and rollback procedures",
+      "url": "https://wiki.company.com/deployment-runbook",
+      "tags": "deployment,devops,runbook,procedures",
+      "created_at": "2025-09-20T11:00:00",
+      "updated_at": "2025-10-24T16:00:00"
+    },
+    {
+      "id": 13,
+      "title": "User Research Findings",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Research\\User_Research_Oct_2024.pptx",
+      "file_type": "pptx",
+      "description": "PowerPoint presentation with user research findings from October 2024 including insights and recommendations",
+      "url": "",
+      "tags": "research,user-experience,findings,presentation",
+      "created_at": "2025-10-20T13:00:00",
+      "updated_at": "2025-10-20T13:00:00"
+    },
+    {
+      "id": 14,
+      "title": "Contract Template - NDA",
+      "file_path": "C:\\Users\\ajbir\\Documents\\Legal\\NDA_Template_Standard.docx",
+      "file_type": "docx",
+      "description": "Standard non-disclosure agreement template for vendors and partners",
+      "url": "",
+      "tags": "legal,contract,nda,template",
+      "created_at": "2025-06-15T10:00:00",
+      "updated_at": "2025-06-15T10:00:00"
+    },
+    {
+      "id": 15,
+      "title": "Training Video - New Feature Demo",
+      "file_path": "",
+      "file_type": "video",
+      "description": "Training video demonstrating the new dashboard features released in v2.5",
+      "url": "https://videos.company.com/training/dashboard-v2.5",
+      "tags": "training,video,demo,features",
+      "created_at": "2025-10-18T14:00:00",
+      "updated_at": "2025-10-18T14:00:00"
+    }
+  ]
+}

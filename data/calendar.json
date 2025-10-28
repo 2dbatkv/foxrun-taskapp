@@ -1,0 +1,136 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "Team Standup Meeting",
+      "description": "Daily standup with the development team to discuss progress and blockers",
+      "start_time": "2025-10-29T09:00:00",
+      "end_time": "2025-10-29T09:30:00",
+      "location": "Conference Room A / Zoom",
+      "all_day": false,
+      "created_at": "2025-10-27T14:00:00",
+      "updated_at": "2025-10-27T14:00:00"
+    },
+    {
+      "id": 2,
+      "title": "Project Kickoff - Q4 Initiative",
+      "description": "Kickoff meeting for the new Q4 project initiative. Review goals, timeline, and team assignments",
+      "start_time": "2025-10-30T10:00:00",
+      "end_time": "2025-10-30T11:30:00",
+      "location": "Main Conference Room",
+      "all_day": false,
+      "created_at": "2025-10-25T10:30:00",
+      "updated_at": "2025-10-25T10:30:00"
+    },
+    {
+      "id": 3,
+      "title": "Lunch with Client",
+      "description": "Lunch meeting with ABC Corp to discuss contract renewal",
+      "start_time": "2025-10-29T12:00:00",
+      "end_time": "2025-10-29T13:30:00",
+      "location": "The Capital Grille Downtown",
+      "all_day": false,
+      "created_at": "2025-10-26T15:20:00",
+      "updated_at": "2025-10-26T15:20:00"
+    },
+    {
+      "id": 4,
+      "title": "Code Review Session",
+      "description": "Weekly code review session for pull requests submitted this week",
+      "start_time": "2025-10-31T14:00:00",
+      "end_time": "2025-10-31T15:30:00",
+      "location": "Virtual - Google Meet",
+      "all_day": false,
+      "created_at": "2025-10-28T09:00:00",
+      "updated_at": "2025-10-28T09:00:00"
+    },
+    {
+      "id": 5,
+      "title": "Company All-Hands Meeting",
+      "description": "Quarterly all-hands meeting with CEO presentation and Q&A",
+      "start_time": "2025-11-01T13:00:00",
+      "end_time": "2025-11-01T14:30:00",
+      "location": "Main Auditorium / Livestream",
+      "all_day": false,
+      "created_at": "2025-10-20T11:00:00",
+      "updated_at": "2025-10-20T11:00:00"
+    },
+    {
+      "id": 6,
+      "title": "Halloween Office Party",
+      "description": "Annual Halloween costume party and team building event",
+      "start_time": "2025-10-31T00:00:00",
+      "end_time": "2025-10-31T23:59:59",
+      "location": "Office - Main Floor",
+      "all_day": true,
+      "created_at": "2025-10-15T10:00:00",
+      "updated_at": "2025-10-15T10:00:00"
+    },
+    {
+      "id": 7,
+      "title": "1-on-1 with Manager",
+      "description": "Monthly one-on-one meeting to discuss progress, challenges, and career development",
+      "start_time": "2025-11-02T15:00:00",
+      "end_time": "2025-11-02T16:00:00",
+      "location": "Manager's Office",
+      "all_day": false,
+      "created_at": "2025-10-28T08:30:00",
+      "updated_at": "2025-10-28T08:30:00"
+    },
+    {
+      "id": 8,
+      "title": "Frontend Architecture Workshop",
+      "description": "Deep dive into React best practices and new architecture patterns",
+      "start_time": "2025-11-03T10:00:00",
+      "end_time": "2025-11-03T12:00:00",
+      "location": "Training Room B",
+      "all_day": false,
+      "created_at": "2025-10-27T13:15:00",
+      "updated_at": "2025-10-27T13:15:00"
+    },
+    {
+      "id": 9,
+      "title": "Vendor Demo - Analytics Platform",
+      "description": "Product demo from DataViz Corp for their new analytics platform",
+      "start_time": "2025-11-04T11:00:00",
+      "end_time": "2025-11-04T12:00:00",
+      "location": "Virtual - Vendor's Platform",
+      "all_day": false,
+      "created_at": "2025-10-28T14:00:00",
+      "updated_at": "2025-10-28T14:00:00"
+    },
+    {
+      "id": 10,
+      "title": "Team Offsite Planning Day",
+      "description": "Full day offsite for Q1 2026 planning and team activities",
+      "start_time": "2025-11-08T00:00:00",
+      "end_time": "2025-11-08T23:59:59",
+      "location": "Retreat Center - Mountain View",
+      "all_day": true,
+      "created_at": "2025-10-22T09:00:00",
+      "updated_at": "2025-10-22T09:00:00"
+    },
+    {
+      "id": 11,
+      "title": "Doctor's Appointment",
+      "description": "Annual physical checkup",
+      "start_time": "2025-11-05T16:30:00",
+      "end_time": "2025-11-05T17:30:00",
+      "location": "Downtown Medical Center",
+      "all_day": false,
+      "created_at": "2025-10-10T11:00:00",
+      "updated_at": "2025-10-10T11:00:00"
+    },
+    {
+      "id": 12,
+      "title": "Client Presentation - Final Deliverables",
+      "description": "Present final project deliverables to XYZ Industries stakeholders",
+      "start_time": "2025-11-06T14:00:00",
+      "end_time": "2025-11-06T16:00:00",
+      "location": "Client Office - Executive Boardroom",
+      "all_day": false,
+      "created_at": "2025-10-28T16:00:00",
+      "updated_at": "2025-10-28T16:00:00"
+    }
+  ]
+}

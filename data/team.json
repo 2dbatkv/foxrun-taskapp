@@ -1,0 +1,39 @@
+{
+  "team": [
+    {
+      "name": "Aaron",
+      "daily_capacity_minutes": 480,
+      "role": "Developer"
+    },
+    {
+      "name": "Sarah",
+      "daily_capacity_minutes": 480,
+      "role": "Designer"
+    },
+    {
+      "name": "Mike",
+      "daily_capacity_minutes": 240,
+      "role": "Developer"
+    },
+    {
+      "name": "John",
+      "daily_capacity_minutes": 480,
+      "role": "DevOps"
+    },
+    {
+      "name": "Emily",
+      "daily_capacity_minutes": 360,
+      "role": "Project Manager"
+    },
+    {
+      "name": "David",
+      "daily_capacity_minutes": 480,
+      "role": "Database Admin"
+    },
+    {
+      "name": "Lisa",
+      "daily_capacity_minutes": 240,
+      "role": "QA Engineer"
+    }
+  ]
+}

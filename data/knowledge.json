@@ -1,0 +1,94 @@
+{
+  "knowledge": [
+    {
+      "id": 1,
+      "title": "Git Workflow Best Practices",
+      "content": "Our team follows the Git Flow branching model:\n\n1. Main branches: main (production) and develop (staging)\n2. Feature branches: feature/feature-name\n3. Bugfix branches: bugfix/issue-description\n4. Release branches: release/version-number\n\nCommit message format:\n- feat: New feature\n- fix: Bug fix\n- docs: Documentation changes\n- refactor: Code refactoring\n- test: Test updates\n\nAlways create pull requests for code review before merging to develop.",
+      "category": "Development",
+      "tags": "git,workflow,version-control,best-practices",
+      "created_at": "2025-10-15T10:00:00",
+      "updated_at": "2025-10-15T10:00:00"
+    },
+    {
+      "id": 2,
+      "title": "Production Deployment Checklist",
+      "content": "Pre-deployment checklist:\n\n□ All tests passing in CI/CD pipeline\n□ Code reviewed and approved by at least 2 team members\n□ Database migrations tested in staging\n□ Environment variables updated in production\n□ Backup created before deployment\n□ Rollback plan documented\n□ Monitor dashboard ready\n□ Stakeholders notified of deployment window\n\nPost-deployment:\n□ Verify all critical features working\n□ Check error logs for 30 minutes\n□ Run smoke tests\n□ Update deployment documentation",
+      "category": "DevOps",
+      "tags": "deployment,checklist,production,devops",
+      "created_at": "2025-10-10T14:30:00",
+      "updated_at": "2025-10-20T09:15:00"
+    },
+    {
+      "id": 3,
+      "title": "API Rate Limiting Guidelines",
+      "content": "Our API implements rate limiting to prevent abuse:\n\n- Free tier: 100 requests/hour\n- Basic tier: 1,000 requests/hour\n- Pro tier: 10,000 requests/hour\n- Enterprise: Custom limits\n\nRate limit headers returned:\n- X-RateLimit-Limit: Maximum requests per window\n- X-RateLimit-Remaining: Requests remaining\n- X-RateLimit-Reset: Unix timestamp when limit resets\n\nHTTP 429 status code returned when limit exceeded.\n\nImplementation uses Redis for distributed rate limiting across servers.",
+      "category": "API",
+      "tags": "api,rate-limiting,redis,guidelines",
+      "created_at": "2025-09-28T11:00:00",
+      "updated_at": "2025-09-28T11:00:00"
+    },
+    {
+      "id": 4,
+      "title": "Database Backup and Recovery Procedures",
+      "content": "Backup Schedule:\n- Full backups: Daily at 2:00 AM UTC\n- Incremental backups: Every 6 hours\n- Transaction logs: Continuous\n- Retention: 30 days for full, 7 days for incremental\n\nBackup locations:\n- Primary: AWS S3 us-east-1\n- Secondary: AWS S3 us-west-2 (cross-region)\n- Offsite: Azure Blob Storage\n\nRecovery Testing:\n- Monthly recovery drills\n- Quarterly disaster recovery exercises\n\nRecovery Time Objective (RTO): 4 hours\nRecovery Point Objective (RPO): 15 minutes\n\nContact DBA team immediately for recovery: dba-team@company.com",
+      "category": "Database",
+      "tags": "database,backup,disaster-recovery,procedures",
+      "created_at": "2025-10-05T13:00:00",
+      "updated_at": "2025-10-05T13:00:00"
+    },
+    {
+      "id": 5,
+      "title": "Security Incident Response Plan",
+      "content": "In case of security incident:\n\n1. IMMEDIATE (0-15 min):\n   - Notify security team: security@company.com\n   - Document initial findings\n   - DO NOT delete any logs or evidence\n\n2. CONTAINMENT (15-60 min):\n   - Isolate affected systems\n   - Change compromised credentials\n   - Enable additional logging\n\n3. INVESTIGATION (1-4 hours):\n   - Determine scope of breach\n   - Identify attack vectors\n   - Document timeline\n\n4. RECOVERY (4+ hours):\n   - Apply patches/fixes\n   - Restore from clean backups if needed\n   - Verify system integrity\n\n5. POST-INCIDENT:\n   - Complete incident report\n   - Update security policies\n   - Conduct team retrospective\n\nEscalation: CTO and Legal must be notified within 1 hour of confirmed breach.",
+      "category": "Security",
+      "tags": "security,incident-response,procedures,emergency",
+      "created_at": "2025-09-15T09:00:00",
+      "updated_at": "2025-10-01T14:00:00"
+    },
+    {
+      "id": 6,
+      "title": "React Component Architecture Standards",
+      "content": "Component organization:\n\n1. Directory structure:\n   /components\n     /common - Reusable components\n     /features - Feature-specific components\n     /layouts - Page layouts\n\n2. Component naming:\n   - PascalCase for component files\n   - Descriptive names (e.g., UserProfileCard, not Card)\n\n3. Props:\n   - Use TypeScript interfaces\n   - Destructure props in component signature\n   - Provide default values when appropriate\n\n4. State management:\n   - Use Context API for global state\n   - useState for local component state\n   - useReducer for complex state logic\n\n5. Testing:\n   - Unit tests for all components\n   - Integration tests for features\n   - Minimum 80% code coverage",
+      "category": "Development",
+      "tags": "react,javascript,architecture,frontend,standards",
+      "created_at": "2025-10-12T10:30:00",
+      "updated_at": "2025-10-12T10:30:00"
+    },
+    {
+      "id": 7,
+      "title": "Meeting Room Booking Guide",
+      "content": "How to book conference rooms:\n\n1. Use Outlook/Google Calendar\n2. Check room availability first\n3. Include these details:\n   - Meeting title\n   - Attendees\n   - Equipment needed (projector, whiteboard, etc.)\n   - Catering requirements (if any)\n\nRoom capacities:\n- Small rooms (A1-A4): 4-6 people\n- Medium rooms (B1-B6): 8-12 people  \n- Large rooms (C1-C2): 20-30 people\n- Auditorium: 100 people\n\nAV equipment available in all rooms.\nCatering must be ordered 24 hours in advance.\n\nCancel unused bookings to free up rooms for others!",
+      "category": "Office",
+      "tags": "office,meetings,rooms,facilities",
+      "created_at": "2025-09-20T14:00:00",
+      "updated_at": "2025-09-20T14:00:00"
+    },
+    {
+      "id": 8,
+      "title": "Python Coding Standards",
+      "content": "Follow PEP 8 style guide:\n\n1. Indentation: 4 spaces (no tabs)\n2. Line length: Maximum 79 characters\n3. Imports: Standard library, third-party, local (in that order)\n4. Naming conventions:\n   - snake_case for functions and variables\n   - PascalCase for classes\n   - UPPER_CASE for constants\n\n5. Documentation:\n   - Docstrings for all public functions/classes\n   - Google style docstrings preferred\n\n6. Type hints:\n   - Use type hints for function parameters and returns\n   - Run mypy for type checking\n\n7. Testing:\n   - pytest for all tests\n   - Tests in /tests directory\n   - Aim for >90% coverage\n\nUse black for auto-formatting, flake8 for linting.",
+      "category": "Development",
+      "tags": "python,coding-standards,best-practices,pep8",
+      "created_at": "2025-10-08T11:15:00",
+      "updated_at": "2025-10-08T11:15:00"
+    },
+    {
+      "id": 9,
+      "title": "Customer Support Escalation Process",
+      "content": "Support ticket escalation levels:\n\nLevel 1 (Front-line support):\n- Response time: 4 hours\n- Resolution time: 24 hours\n- Handles: Basic questions, known issues\n\nLevel 2 (Technical support):\n- Response time: 2 hours\n- Resolution time: 48 hours\n- Handles: Technical issues, bugs, integrations\n\nLevel 3 (Engineering):\n- Response time: 1 hour (critical), 4 hours (normal)\n- Resolution time: Varies by complexity\n- Handles: Critical bugs, system outages, data issues\n\nCritical issue criteria:\n- Production system down\n- Data loss/corruption\n- Security vulnerability\n- Major feature completely broken\n\nFor critical issues: Immediately notify engineering team via Slack #critical-alerts",
+      "category": "Support",
+      "tags": "support,escalation,customer-service,process",
+      "created_at": "2025-09-25T10:00:00",
+      "updated_at": "2025-10-15T13:00:00"
+    },
+    {
+      "id": 10,
+      "title": "AWS Infrastructure Overview",
+      "content": "Our AWS setup:\n\nRegions:\n- Primary: us-east-1 (N. Virginia)\n- DR: us-west-2 (Oregon)\n\nKey services:\n- EC2: Application servers (Auto Scaling Groups)\n- RDS: PostgreSQL databases (Multi-AZ)\n- S3: File storage and backups\n- CloudFront: CDN for static assets\n- Route53: DNS management\n- Lambda: Serverless functions\n- SQS/SNS: Message queuing and notifications\n\nEnvironments:\n- Production: prod-* resources\n- Staging: staging-* resources\n- Development: dev-* resources\n\nTags required on all resources:\n- Environment\n- Project\n- Owner\n- CostCenter\n\nAccess: Use AWS SSO, never share IAM credentials.",
+      "category": "Infrastructure",
+      "tags": "aws,cloud,infrastructure,architecture",
+      "created_at": "2025-10-01T09:30:00",
+      "updated_at": "2025-10-01T09:30:00"
+    }
+  ]
+}
