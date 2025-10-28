@@ -1,39 +1,34 @@
 {
   "team": [
     {
+      "name": "Rai",
+      "daily_capacity_minutes": 480,
+      "role": "Family Member"
+    },
+    {
       "name": "Aaron",
       "daily_capacity_minutes": 480,
-      "role": "Developer"
+      "role": "Family Member"
     },
     {
-      "name": "Sarah",
+      "name": "Samuel",
       "daily_capacity_minutes": 480,
-      "role": "Designer"
+      "role": "Family Member"
     },
     {
-      "name": "Mike",
-      "daily_capacity_minutes": 240,
-      "role": "Developer"
-    },
-    {
-      "name": "John",
+      "name": "Zach",
       "daily_capacity_minutes": 480,
-      "role": "DevOps"
+      "role": "Family Member"
     },
     {
-      "name": "Emily",
-      "daily_capacity_minutes": 360,
-      "role": "Project Manager"
-    },
-    {
-      "name": "David",
+      "name": "Tyler",
       "daily_capacity_minutes": 480,
-      "role": "Database Admin"
+      "role": "Family Member"
     },
     {
-      "name": "Lisa",
-      "daily_capacity_minutes": 240,
-      "role": "QA Engineer"
+      "name": "Aurora",
+      "daily_capacity_minutes": 480,
+      "role": "Family Member"
     }
   ]
 }
