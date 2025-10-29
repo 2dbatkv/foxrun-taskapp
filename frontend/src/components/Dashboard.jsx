@@ -110,44 +110,28 @@ const Dashboard = () => {
         return d;
       };
 
-      // Sum up task times for active and completed tasks
+      // Sum up task times ONLY for completed tasks
       tasks.forEach(task => {
-        if (!task.assignee) return;
-
-        const isActive = task.status === 'todo' || task.status === 'in_progress';
-        const isCompleted = task.status === 'completed';
+        // Only count completed tasks with an assignee and completed_at timestamp
+        if (!task.assignee || task.status !== 'completed' || !task.completed_at) return;
 
         if (workloadTimeRange === 'daily') {
-          // Daily view: count tasks due today OR completed today
-          if (isActive && task.due_date) {
-            const taskDueDate = normalizeDate(task.due_date);
-            const todayNormalized = normalizeDate(today);
-            if (taskDueDate.getTime() === todayNormalized.getTime()) {
-              if (workloadByPerson[task.assignee]) {
-                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
-              }
-            }
-          } else if (isCompleted && task.completed_at) {
-            const completedDate = normalizeDate(task.completed_at);
-            const todayNormalized = normalizeDate(today);
-            if (completedDate.getTime() === todayNormalized.getTime()) {
-              if (workloadByPerson[task.assignee]) {
-                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
-              }
-            }
-          }
-        } else {
-          // Weekly view: count ALL active tasks + tasks completed this week
-          if (isActive) {
+          // Daily view: only count tasks completed TODAY
+          const completedDate = normalizeDate(task.completed_at);
+          const todayNormalized = normalizeDate(today);
+
+          if (completedDate.getTime() === todayNormalized.getTime()) {
             if (workloadByPerson[task.assignee]) {
               workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
             }
-          } else if (isCompleted && task.completed_at) {
-            const completedDate = new Date(task.completed_at);
-            if (completedDate >= startDate && completedDate <= endDate) {
-              if (workloadByPerson[task.assignee]) {
-                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
-              }
+          }
+        } else {
+          // Weekly view: only count tasks completed THIS WEEK
+          const completedDate = new Date(task.completed_at);
+
+          if (completedDate >= startDate && completedDate <= endDate) {
+            if (workloadByPerson[task.assignee]) {
+              workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
             }
           }
         }
