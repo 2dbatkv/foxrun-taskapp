@@ -40,6 +40,8 @@ def get_reminder(reminder_id: int):
 @router.post("/", response_model=schemas.Reminder, status_code=201)
 def create_reminder(reminder: schemas.ReminderCreate):
     reminder_data = reminder.model_dump()
+    # Set is_completed to false for new reminders
+    reminder_data['is_completed'] = False
     new_reminder = json_storage.create("reminders", reminder_data)
     return new_reminder
 
