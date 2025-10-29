@@ -283,7 +283,13 @@ const TaskPlanner = () => {
         {tasks.length === 0 ? (
           <p className="text-gray-500 text-center py-4">No tasks yet. Create your first task!</p>
         ) : (
-          tasks.map((task) => (
+          [...tasks]
+            .sort((a, b) => {
+              // Sort order: todo, in_progress, cancelled, completed
+              const statusOrder = { todo: 1, in_progress: 2, cancelled: 3, completed: 4 };
+              return statusOrder[a.status] - statusOrder[b.status];
+            })
+            .map((task) => (
             <div
               key={task.id}
               className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition"
@@ -332,7 +338,7 @@ const TaskPlanner = () => {
                 )}
               </div>
             </div>
-          ))
+            ))
         )}
       </div>
     </Tile>

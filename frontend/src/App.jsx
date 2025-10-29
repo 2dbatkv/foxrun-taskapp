@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import TileLayout from './components/TileLayout';
 import TaskPlanner from './components/TaskPlanner';
 import Calendar from './components/Calendar';
@@ -28,6 +28,14 @@ function App() {
   const [searchResults, setSearchResults] = useState(null);
   const [isAISearch, setIsAISearch] = useState(false);
   const [showAdminView, setShowAdminView] = useState(false);
+  const topRef = useRef(null);
+
+  // Disable browser's automatic scroll restoration
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
 
   useEffect(() => {
     const stored = initializeAuthFromStorage();
@@ -44,12 +52,11 @@ function App() {
   }, []);
 
   // Scroll to top when authenticated view renders or page refreshes
-  useEffect(() => {
+  // Use useLayoutEffect to run synchronously before browser paint
+  useLayoutEffect(() => {
     if (auth.authenticated && !initializing) {
-      // Use setTimeout to ensure DOM is fully rendered
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-      }, 0);
+      window.scrollTo(0, 0);
+      topRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
     }
   }, [auth.authenticated, initializing, showAdminView]);
 
@@ -115,6 +122,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <div ref={topRef} />
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>

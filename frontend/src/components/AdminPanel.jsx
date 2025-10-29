@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import TileLayout from './TileLayout';
 import Tile from './Tile';
 import TaskPlanner from './TaskPlanner';
@@ -597,8 +597,17 @@ const TaskTemplateLibraryTile = () => {
 };
 
 const AdminPanel = ({ onBack, onLogout }) => {
+  const topRef = useRef(null);
+
+  // Scroll to top when admin panel mounts
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+    topRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100">
+      <div ref={topRef} />
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
