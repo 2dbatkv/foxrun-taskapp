@@ -103,16 +103,23 @@ const Dashboard = () => {
         };
       });
 
-      // Sum up task times for active tasks within the date range
+      // Sum up task times for active tasks
       tasks.forEach(task => {
         if (task.assignee && (task.status === 'todo' || task.status === 'in_progress')) {
-          // Check if task has a due date and falls within the range
-          if (task.due_date) {
-            const taskDueDate = new Date(task.due_date);
-            if (taskDueDate >= startDate && taskDueDate <= endDate) {
-              if (workloadByPerson[task.assignee]) {
-                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
+          if (workloadTimeRange === 'daily') {
+            // Daily view: only count tasks due today
+            if (task.due_date) {
+              const taskDueDate = new Date(task.due_date);
+              if (taskDueDate >= startDate && taskDueDate <= endDate) {
+                if (workloadByPerson[task.assignee]) {
+                  workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
+                }
               }
+            }
+          } else {
+            // Weekly view: count ALL active tasks assigned to the person
+            if (workloadByPerson[task.assignee]) {
+              workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
             }
           }
         }
