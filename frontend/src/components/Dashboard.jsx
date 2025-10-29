@@ -11,10 +11,11 @@ const Dashboard = () => {
   const [upcomingReminders, setUpcomingReminders] = useState([]);
   const [recentKnowledge, setRecentKnowledge] = useState([]);
   const [teamWorkload, setTeamWorkload] = useState([]);
+  const [workloadTimeRange, setWorkloadTimeRange] = useState('weekly'); // 'daily' or 'weekly'
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [workloadTimeRange]);
 
   const fetchDashboardData = async () => {
     try {
@@ -69,21 +70,50 @@ const Dashboard = () => {
       const teamResponse = await teamAPI.getAll();
       const teamMembers = teamResponse.data.team || [];
 
+      // Calculate date range based on workloadTimeRange
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let startDate, endDate, capacityMultiplier;
+
+      if (workloadTimeRange === 'daily') {
+        // Daily: today only
+        startDate = new Date(today);
+        endDate = new Date(today);
+        endDate.setHours(23, 59, 59, 999);
+        capacityMultiplier = 1;
+      } else {
+        // Weekly: current week (Sunday - Saturday)
+        const dayOfWeek = today.getDay(); // 0 = Sunday
+        startDate = new Date(today);
+        startDate.setDate(today.getDate() - dayOfWeek); // Go back to Sunday
+        endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6); // Saturday
+        endDate.setHours(23, 59, 59, 999);
+        capacityMultiplier = 5; // 5 weekdays
+      }
+
       // Calculate workload per person
       const workloadByPerson = {};
       teamMembers.forEach(member => {
         workloadByPerson[member.name] = {
-          capacity: member.daily_capacity_minutes,
+          capacity: member.daily_capacity_minutes * capacityMultiplier,
           assigned: 0,
           role: member.role
         };
       });
 
-      // Sum up task times for active tasks (not completed or cancelled)
+      // Sum up task times for active tasks within the date range
       tasks.forEach(task => {
         if (task.assignee && (task.status === 'todo' || task.status === 'in_progress')) {
-          if (workloadByPerson[task.assignee]) {
-            workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
+          // Check if task has a due date and falls within the range
+          if (task.due_date) {
+            const taskDueDate = new Date(task.due_date);
+            if (taskDueDate >= startDate && taskDueDate <= endDate) {
+              if (workloadByPerson[task.assignee]) {
+                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
+              }
+            }
           }
         }
       });
@@ -94,7 +124,7 @@ const Dashboard = () => {
         capacity: data.capacity,
         assigned: data.assigned,
         role: data.role,
-        percentage: Math.round((data.assigned / data.capacity) * 100)
+        percentage: data.capacity > 0 ? Math.round((data.assigned / data.capacity) * 100) : 0
       }));
 
       setTeamWorkload(workloadArray);
@@ -277,10 +307,34 @@ const Dashboard = () => {
       {/* Team Workload Section */}
       <div className="mt-6">
         <div className="bg-gradient-to-br from-slate-50 to-white p-4 rounded-lg border border-slate-200">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-            <Users size={16} />
-            Team Workload Distribution
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+              <Users size={16} />
+              Team Workload Distribution
+            </h3>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setWorkloadTimeRange('daily')}
+                className={`px-3 py-1 text-xs rounded ${
+                  workloadTimeRange === 'daily'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Today
+              </button>
+              <button
+                onClick={() => setWorkloadTimeRange('weekly')}
+                className={`px-3 py-1 text-xs rounded ${
+                  workloadTimeRange === 'weekly'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                This Week
+              </button>
+            </div>
+          </div>
           <div className="space-y-3">
             {teamWorkload.length === 0 ? (
               <p className="text-xs text-gray-500 italic">No team data available</p>
