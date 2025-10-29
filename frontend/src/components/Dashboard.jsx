@@ -105,58 +105,36 @@ const Dashboard = () => {
 
       // Helper function to check if a date matches today (ignoring time and timezone)
       const isToday = (dateString) => {
+        if (!dateString) return false;
         const d = new Date(dateString);
         const now = new Date();
-        const result = d.getFullYear() === now.getFullYear() &&
+        return d.getFullYear() === now.getFullYear() &&
                d.getMonth() === now.getMonth() &&
                d.getDate() === now.getDate();
-        console.log('isToday check:', {
-          dateString,
-          taskYear: d.getFullYear(), taskMonth: d.getMonth(), taskDate: d.getDate(),
-          nowYear: now.getFullYear(), nowMonth: now.getMonth(), nowDate: now.getDate(),
-          result
-        });
-        return result;
       };
 
-      console.log('=== WORKLOAD CALCULATION START ===');
-      console.log('workloadTimeRange:', workloadTimeRange);
-      console.log('Total tasks:', tasks.length);
-      console.log('Completed tasks:', tasks.filter(t => t.status === 'completed').length);
-
-      // Sum up task times ONLY for completed tasks
+      // Sum up task times ONLY for completed tasks, filtered by DUE DATE
       tasks.forEach(task => {
-        // Only count completed tasks with an assignee and completed_at timestamp
-        if (!task.assignee || task.status !== 'completed' || !task.completed_at) return;
-
-        console.log('Processing completed task:', task.title, 'assignee:', task.assignee, 'completed_at:', task.completed_at);
+        // Only count completed tasks with an assignee and due_date
+        if (!task.assignee || task.status !== 'completed' || !task.due_date) return;
 
         if (workloadTimeRange === 'daily') {
-          // Daily view: only count tasks completed TODAY
-          const isTodayResult = isToday(task.completed_at);
-          console.log('Daily view - isToday result:', isTodayResult);
-          if (isTodayResult) {
+          // Daily view: only count completed tasks that were DUE today
+          if (isToday(task.due_date)) {
             if (workloadByPerson[task.assignee]) {
-              console.log('Adding to', task.assignee, ':', task.time_to_complete_minutes, 'minutes');
               workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
             }
           }
         } else {
-          // Weekly view: only count tasks completed THIS WEEK
-          const completedDate = new Date(task.completed_at);
-          console.log('Weekly view - checking if', completedDate, 'is between', startDate, 'and', endDate);
-
-          if (completedDate >= startDate && completedDate <= endDate) {
+          // Weekly view: only count completed tasks that were DUE this week
+          const dueDate = new Date(task.due_date);
+          if (dueDate >= startDate && dueDate <= endDate) {
             if (workloadByPerson[task.assignee]) {
-              console.log('Adding to', task.assignee, ':', task.time_to_complete_minutes, 'minutes');
               workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
             }
           }
         }
       });
-
-      console.log('Final workload:', workloadByPerson);
-      console.log('=== WORKLOAD CALCULATION END ===');
 
       // Convert to array for rendering
       const workloadArray = Object.entries(workloadByPerson).map(([name, data]) => ({
