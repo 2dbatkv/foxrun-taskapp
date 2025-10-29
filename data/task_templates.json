@@ -1,0 +1,476 @@
+{
+  "templates": [
+    {
+      "id": 1,
+      "title": "Wash dishes and put them away",
+      "description": "Daily kitchen task",
+      "priority": "high",
+      "time_to_complete_minutes": 30,
+      "category": "daily"
+    },
+    {
+      "id": 2,
+      "title": "Wipe down kitchen counters and stove",
+      "description": "Daily kitchen cleaning",
+      "priority": "high",
+      "time_to_complete_minutes": 15,
+      "category": "daily"
+    },
+    {
+      "id": 3,
+      "title": "Take out trash and recycling",
+      "description": "Daily waste management",
+      "priority": "high",
+      "time_to_complete_minutes": 10,
+      "category": "daily"
+    },
+    {
+      "id": 4,
+      "title": "Make beds",
+      "description": "Daily bedroom tidying",
+      "priority": "medium",
+      "time_to_complete_minutes": 15,
+      "category": "daily"
+    },
+    {
+      "id": 5,
+      "title": "Sweep/vacuum high-traffic areas",
+      "description": "Daily floor maintenance",
+      "priority": "medium",
+      "time_to_complete_minutes": 20,
+      "category": "daily"
+    },
+    {
+      "id": 6,
+      "title": "Wipe bathroom sinks and counters",
+      "description": "Daily bathroom maintenance",
+      "priority": "medium",
+      "time_to_complete_minutes": 15,
+      "category": "daily"
+    },
+    {
+      "id": 7,
+      "title": "Check and respond to emails",
+      "description": "Daily communication task",
+      "priority": "high",
+      "time_to_complete_minutes": 30,
+      "category": "daily"
+    },
+    {
+      "id": 8,
+      "title": "Water indoor plants",
+      "description": "Daily plant care",
+      "priority": "low",
+      "time_to_complete_minutes": 10,
+      "category": "daily"
+    },
+    {
+      "id": 9,
+      "title": "Sort and organize mail",
+      "description": "Daily mail management",
+      "priority": "medium",
+      "time_to_complete_minutes": 10,
+      "category": "daily"
+    },
+    {
+      "id": 10,
+      "title": "Tidy living room",
+      "description": "Daily common area cleaning",
+      "priority": "medium",
+      "time_to_complete_minutes": 20,
+      "category": "daily"
+    },
+    {
+      "id": 11,
+      "title": "Feed and care for pets",
+      "description": "Daily pet care",
+      "priority": "urgent",
+      "time_to_complete_minutes": 20,
+      "category": "daily"
+    },
+    {
+      "id": 12,
+      "title": "Check smoke detectors",
+      "description": "Daily safety check",
+      "priority": "high",
+      "time_to_complete_minutes": 5,
+      "category": "daily"
+    },
+    {
+      "id": 13,
+      "title": "Prepare meals",
+      "description": "Daily meal preparation",
+      "priority": "urgent",
+      "time_to_complete_minutes": 90,
+      "category": "daily"
+    },
+    {
+      "id": 14,
+      "title": "Clean up after meals",
+      "description": "Daily post-meal cleanup",
+      "priority": "high",
+      "time_to_complete_minutes": 20,
+      "category": "daily"
+    },
+    {
+      "id": 15,
+      "title": "Review daily schedule",
+      "description": "Daily planning task",
+      "priority": "high",
+      "time_to_complete_minutes": 15,
+      "category": "daily"
+    },
+    {
+      "id": 16,
+      "title": "Do laundry (wash, dry, fold)",
+      "description": "Weekly laundry task",
+      "priority": "medium",
+      "time_to_complete_minutes": 120,
+      "category": "weekly"
+    },
+    {
+      "id": 17,
+      "title": "Change bed linens",
+      "description": "Weekly bedroom maintenance",
+      "priority": "medium",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 18,
+      "title": "Clean bathrooms thoroughly",
+      "description": "Weekly deep bathroom cleaning",
+      "priority": "high",
+      "time_to_complete_minutes": 60,
+      "category": "weekly"
+    },
+    {
+      "id": 19,
+      "title": "Mop all floors",
+      "description": "Weekly floor cleaning",
+      "priority": "medium",
+      "time_to_complete_minutes": 45,
+      "category": "weekly"
+    },
+    {
+      "id": 20,
+      "title": "Dust all surfaces and furniture",
+      "description": "Weekly dusting task",
+      "priority": "medium",
+      "time_to_complete_minutes": 40,
+      "category": "weekly"
+    },
+    {
+      "id": 21,
+      "title": "Vacuum entire house including under furniture",
+      "description": "Weekly deep vacuuming",
+      "priority": "medium",
+      "time_to_complete_minutes": 60,
+      "category": "weekly"
+    },
+    {
+      "id": 22,
+      "title": "Clean kitchen appliances (microwave, toaster, etc.)",
+      "description": "Weekly appliance cleaning",
+      "priority": "medium",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 23,
+      "title": "Wipe down baseboards",
+      "description": "Weekly detail cleaning",
+      "priority": "low",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 24,
+      "title": "Clean mirrors and windows",
+      "description": "Weekly glass cleaning",
+      "priority": "low",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 25,
+      "title": "Organize pantry and cupboards",
+      "description": "Weekly kitchen organization",
+      "priority": "low",
+      "time_to_complete_minutes": 45,
+      "category": "weekly"
+    },
+    {
+      "id": 26,
+      "title": "Take out large trash items",
+      "description": "Weekly waste management",
+      "priority": "medium",
+      "time_to_complete_minutes": 20,
+      "category": "weekly"
+    },
+    {
+      "id": 27,
+      "title": "Water outdoor plants and lawn",
+      "description": "Weekly outdoor maintenance",
+      "priority": "medium",
+      "time_to_complete_minutes": 40,
+      "category": "weekly"
+    },
+    {
+      "id": 28,
+      "title": "Sweep porch and outdoor areas",
+      "description": "Weekly outdoor cleaning",
+      "priority": "low",
+      "time_to_complete_minutes": 20,
+      "category": "weekly"
+    },
+    {
+      "id": 29,
+      "title": "Check and replace light bulbs",
+      "description": "Weekly maintenance check",
+      "priority": "low",
+      "time_to_complete_minutes": 15,
+      "category": "weekly"
+    },
+    {
+      "id": 30,
+      "title": "Grocery shopping",
+      "description": "Weekly shopping task",
+      "priority": "high",
+      "time_to_complete_minutes": 90,
+      "category": "weekly"
+    },
+    {
+      "id": 31,
+      "title": "Meal planning for the week",
+      "description": "Weekly planning task",
+      "priority": "high",
+      "time_to_complete_minutes": 45,
+      "category": "weekly"
+    },
+    {
+      "id": 32,
+      "title": "Review and pay bills",
+      "description": "Weekly financial task",
+      "priority": "high",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 33,
+      "title": "Clean out refrigerator",
+      "description": "Weekly fridge maintenance",
+      "priority": "medium",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 34,
+      "title": "Organize closets",
+      "description": "Weekly organization task",
+      "priority": "low",
+      "time_to_complete_minutes": 60,
+      "category": "weekly"
+    },
+    {
+      "id": 35,
+      "title": "Empty all trash cans and replace liners",
+      "description": "Weekly waste management",
+      "priority": "medium",
+      "time_to_complete_minutes": 20,
+      "category": "weekly"
+    },
+    {
+      "id": 36,
+      "title": "Clean pet areas (litter box, bedding, etc.)",
+      "description": "Weekly pet care",
+      "priority": "high",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 37,
+      "title": "Disinfect high-touch surfaces",
+      "description": "Weekly sanitization",
+      "priority": "high",
+      "time_to_complete_minutes": 25,
+      "category": "weekly"
+    },
+    {
+      "id": 38,
+      "title": "Review weekly schedule and appointments",
+      "description": "Weekly planning task",
+      "priority": "high",
+      "time_to_complete_minutes": 30,
+      "category": "weekly"
+    },
+    {
+      "id": 39,
+      "title": "Deep clean kitchen (oven, stovetop, behind appliances)",
+      "description": "Monthly kitchen deep cleaning",
+      "priority": "medium",
+      "time_to_complete_minutes": 120,
+      "category": "monthly"
+    },
+    {
+      "id": 40,
+      "title": "Clean ceiling fans and light fixtures",
+      "description": "Monthly detail cleaning",
+      "priority": "low",
+      "time_to_complete_minutes": 45,
+      "category": "monthly"
+    },
+    {
+      "id": 41,
+      "title": "Wash windows inside and out",
+      "description": "Monthly window cleaning",
+      "priority": "low",
+      "time_to_complete_minutes": 90,
+      "category": "monthly"
+    },
+    {
+      "id": 42,
+      "title": "Clean under and behind furniture",
+      "description": "Monthly deep cleaning",
+      "priority": "low",
+      "time_to_complete_minutes": 60,
+      "category": "monthly"
+    },
+    {
+      "id": 43,
+      "title": "Organize garage or storage areas",
+      "description": "Monthly organization task",
+      "priority": "low",
+      "time_to_complete_minutes": 120,
+      "category": "monthly"
+    },
+    {
+      "id": 44,
+      "title": "Check and change HVAC filters",
+      "description": "Monthly maintenance task",
+      "priority": "medium",
+      "time_to_complete_minutes": 15,
+      "category": "monthly"
+    },
+    {
+      "id": 45,
+      "title": "Deep clean carpets and upholstery",
+      "description": "Monthly deep cleaning",
+      "priority": "medium",
+      "time_to_complete_minutes": 120,
+      "category": "monthly"
+    },
+    {
+      "id": 46,
+      "title": "Test smoke and carbon monoxide detectors",
+      "description": "Monthly safety check",
+      "priority": "high",
+      "time_to_complete_minutes": 15,
+      "category": "monthly"
+    },
+    {
+      "id": 47,
+      "title": "Inspect and clean dryer vent",
+      "description": "Monthly safety maintenance",
+      "priority": "medium",
+      "time_to_complete_minutes": 30,
+      "category": "monthly"
+    },
+    {
+      "id": 48,
+      "title": "Clean dishwasher filter and interior",
+      "description": "Monthly appliance maintenance",
+      "priority": "low",
+      "time_to_complete_minutes": 20,
+      "category": "monthly"
+    },
+    {
+      "id": 49,
+      "title": "Organize and purge paperwork",
+      "description": "Monthly organization task",
+      "priority": "medium",
+      "time_to_complete_minutes": 60,
+      "category": "monthly"
+    },
+    {
+      "id": 50,
+      "title": "Review and update emergency supplies",
+      "description": "Monthly preparedness check",
+      "priority": "medium",
+      "time_to_complete_minutes": 30,
+      "category": "monthly"
+    },
+    {
+      "id": 51,
+      "title": "Declutter one room or area",
+      "description": "Monthly decluttering task",
+      "priority": "low",
+      "time_to_complete_minutes": 90,
+      "category": "monthly"
+    },
+    {
+      "id": 52,
+      "title": "Professional development/skill building",
+      "description": "Personal growth activity",
+      "priority": "medium",
+      "time_to_complete_minutes": 120,
+      "category": "personal"
+    },
+    {
+      "id": 53,
+      "title": "Exercise routine",
+      "description": "Personal health activity",
+      "priority": "high",
+      "time_to_complete_minutes": 60,
+      "category": "personal"
+    },
+    {
+      "id": 54,
+      "title": "Personal grooming appointments",
+      "description": "Personal care task",
+      "priority": "medium",
+      "time_to_complete_minutes": 90,
+      "category": "personal"
+    },
+    {
+      "id": 55,
+      "title": "Social activities/family time",
+      "description": "Personal relationship maintenance",
+      "priority": "high",
+      "time_to_complete_minutes": 120,
+      "category": "personal"
+    },
+    {
+      "id": 56,
+      "title": "Hobby time",
+      "description": "Personal recreation",
+      "priority": "medium",
+      "time_to_complete_minutes": 90,
+      "category": "personal"
+    },
+    {
+      "id": 57,
+      "title": "Vehicle maintenance",
+      "description": "Transportation upkeep",
+      "priority": "medium",
+      "time_to_complete_minutes": 60,
+      "category": "personal"
+    },
+    {
+      "id": 58,
+      "title": "Medical/dental appointments",
+      "description": "Health maintenance",
+      "priority": "high",
+      "time_to_complete_minutes": 90,
+      "category": "personal"
+    },
+    {
+      "id": 59,
+      "title": "Financial planning/budgeting",
+      "description": "Personal finance task",
+      "priority": "high",
+      "time_to_complete_minutes": 60,
+      "category": "personal"
+    }
+  ]
+}

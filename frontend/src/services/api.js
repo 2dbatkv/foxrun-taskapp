@@ -112,6 +112,16 @@ export const teamAPI = {
   getAll: () => api.get('/team/'),
 };
 
+// Task Templates API
+export const taskTemplatesAPI = {
+  getAll: () => api.get('/task-templates/'),
+  getById: (id) => api.get(`/task-templates/${id}`),
+  create: (data) => api.post('/task-templates/', data),
+  update: (id, data) => api.put(`/task-templates/${id}`, data),
+  delete: (id) => api.delete(`/task-templates/${id}`),
+  bulkImport: (data) => api.post('/task-templates/bulk-import', data),
+};
+
 // Admin API
 export const adminAPI = {
   getLoginAttempts: (limit = 100) => api.get('/admin/login-attempts', { params: { limit } }),

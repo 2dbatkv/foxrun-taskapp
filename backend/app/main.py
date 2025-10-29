@@ -14,6 +14,7 @@ from app.routers import (
     knowledge_json,
     reminders_json,
     search_json,
+    task_templates,
     tasks_json,
     team,
 )
@@ -67,6 +68,7 @@ else:
 
 app.include_router(chat.router)
 app.include_router(admin.router)
+app.include_router(task_templates.router)
 
 
 @app.get("/")

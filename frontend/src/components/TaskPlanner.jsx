@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Edit2, Trash2 } from 'lucide-react';
 import Tile from './Tile';
-import { tasksAPI } from '../services/api';
+import { tasksAPI, taskTemplatesAPI } from '../services/api';
 
 const TaskPlanner = () => {
   const [tasks, setTasks] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const initialFormState = {
@@ -22,6 +23,7 @@ const TaskPlanner = () => {
 
   useEffect(() => {
     fetchTasks();
+    fetchTemplates();
   }, []);
 
   const fetchTasks = async () => {
@@ -30,6 +32,30 @@ const TaskPlanner = () => {
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+    }
+  };
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await taskTemplatesAPI.getAll();
+      setTemplates(response.data.templates || []);
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+    }
+  };
+
+  const handleTemplateSelect = (templateId) => {
+    if (!templateId) return;
+
+    const template = templates.find(t => t.id === parseInt(templateId));
+    if (template) {
+      setFormData({
+        ...formData,
+        title: template.title,
+        description: template.description || '',
+        priority: template.priority,
+        time_to_complete_minutes: template.time_to_complete_minutes?.toString() || '',
+      });
     }
   };
 
@@ -148,6 +174,25 @@ const TaskPlanner = () => {
     >
       {showForm && (
         <form onSubmit={handleSubmit} className="mb-4 p-4 bg-gray-50 rounded-lg">
+          {!editingTask && templates.length > 0 && (
+            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Use a Template (Optional)
+              </label>
+              <select
+                onChange={(e) => handleTemplateSelect(e.target.value)}
+                className="w-full p-2 border rounded"
+                defaultValue=""
+              >
+                <option value="">-- Select a template to pre-fill --</option>
+                {templates.map((template) => (
+                  <option key={template.id} value={template.id}>
+                    {template.title} ({template.category} - {template.time_to_complete_minutes}min)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <input
             type="text"
             placeholder="Task title"

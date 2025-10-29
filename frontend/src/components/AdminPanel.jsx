@@ -8,7 +8,7 @@ import KnowledgeBase from './KnowledgeBase';
 import Documents from './Documents';
 import ChatInterface from './ChatInterface';
 import FeedbackForm from './FeedbackForm';
-import { adminAPI, feedbackAPI } from '../services/api';
+import { adminAPI, feedbackAPI, taskTemplatesAPI } from '../services/api';
 
 const LoginAttemptsTile = () => {
   const [attempts, setAttempts] = useState([]);
@@ -313,6 +313,257 @@ const TeamManagementTile = () => {
   );
 };
 
+const TaskTemplateLibraryTile = () => {
+  const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
+  const [bulkImportText, setBulkImportText] = useState('');
+  const [newTemplate, setNewTemplate] = useState({
+    title: '',
+    description: '',
+    priority: 'medium',
+    time_to_complete_minutes: 30,
+    category: 'daily'
+  });
+
+  const fetchTemplates = async () => {
+    try {
+      setLoading(true);
+      const response = await taskTemplatesAPI.getAll();
+      setTemplates(response.data.templates || []);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load task templates.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTemplates();
+  }, []);
+
+  const handleAddTemplate = async () => {
+    try {
+      await taskTemplatesAPI.create(newTemplate);
+      setSuccessMessage('Template added successfully!');
+      setShowAddForm(false);
+      setNewTemplate({
+        title: '',
+        description: '',
+        priority: 'medium',
+        time_to_complete_minutes: 30,
+        category: 'daily'
+      });
+      fetchTemplates();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to add template.');
+    }
+  };
+
+  const handleBulkImport = async () => {
+    try {
+      const data = JSON.parse(bulkImportText);
+      await taskTemplatesAPI.bulkImport(data);
+      setSuccessMessage('Templates imported successfully!');
+      setShowBulkImport(false);
+      setBulkImportText('');
+      fetchTemplates();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to import templates. Check JSON format.');
+    }
+  };
+
+  const handleDeleteTemplate = async (id) => {
+    if (!confirm('Are you sure you want to delete this template?')) return;
+    try {
+      await taskTemplatesAPI.delete(id);
+      setSuccessMessage('Template deleted successfully!');
+      fetchTemplates();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to delete template.');
+    }
+  };
+
+  return (
+    <Tile
+      title="Task Template Library"
+      className="lg:col-span-3"
+      actions={
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+            type="button"
+          >
+            {showAddForm ? 'Cancel' : 'Add Template'}
+          </button>
+          <button
+            onClick={() => setShowBulkImport(!showBulkImport)}
+            className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+            type="button"
+          >
+            {showBulkImport ? 'Cancel' : 'Bulk Import'}
+          </button>
+        </div>
+      }
+    >
+      {loading ? (
+        <p className="text-gray-500">Loading templates...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <div>
+          {successMessage && (
+            <div className="mb-3 p-2 bg-green-100 text-green-700 rounded text-sm">
+              {successMessage}
+            </div>
+          )}
+
+          {showAddForm && (
+            <div className="mb-4 p-4 border border-gray-300 rounded bg-gray-50">
+              <h4 className="font-semibold mb-3 text-sm">Add New Template</h4>
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={newTemplate.title}
+                  onChange={(e) => setNewTemplate({ ...newTemplate, title: e.target.value })}
+                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                />
+                <textarea
+                  placeholder="Description"
+                  value={newTemplate.description}
+                  onChange={(e) => setNewTemplate({ ...newTemplate, description: e.target.value })}
+                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  rows="2"
+                />
+                <div className="grid grid-cols-3 gap-2">
+                  <select
+                    value={newTemplate.priority}
+                    onChange={(e) => setNewTemplate({ ...newTemplate, priority: e.target.value })}
+                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                  >
+                    <option value="urgent">Urgent</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                  <input
+                    type="number"
+                    placeholder="Minutes"
+                    value={newTemplate.time_to_complete_minutes}
+                    onChange={(e) => setNewTemplate({ ...newTemplate, time_to_complete_minutes: parseInt(e.target.value) || 0 })}
+                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                  <select
+                    value={newTemplate.category}
+                    onChange={(e) => setNewTemplate({ ...newTemplate, category: e.target.value })}
+                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                  >
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="personal">Personal</option>
+                  </select>
+                </div>
+                <button
+                  onClick={handleAddTemplate}
+                  className="bg-green-500 text-white px-4 py-1 rounded text-sm hover:bg-green-600"
+                  type="button"
+                >
+                  Save Template
+                </button>
+              </div>
+            </div>
+          )}
+
+          {showBulkImport && (
+            <div className="mb-4 p-4 border border-gray-300 rounded bg-gray-50">
+              <h4 className="font-semibold mb-3 text-sm">Bulk Import Templates (JSON)</h4>
+              <textarea
+                placeholder='{"templates": [{"title": "...", "description": "...", "priority": "medium", "time_to_complete_minutes": 30, "category": "daily"}]}'
+                value={bulkImportText}
+                onChange={(e) => setBulkImportText(e.target.value)}
+                className="w-full px-2 py-1 border border-gray-300 rounded text-sm font-mono"
+                rows="6"
+              />
+              <button
+                onClick={handleBulkImport}
+                className="mt-2 bg-blue-500 text-white px-4 py-1 rounded text-sm hover:bg-blue-600"
+                type="button"
+              >
+                Import Templates
+              </button>
+            </div>
+          )}
+
+          {templates.length === 0 ? (
+            <p className="text-gray-500">No templates yet. Add one to get started!</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="text-left text-gray-600 border-b">
+                    <th className="py-2 pr-4">Title</th>
+                    <th className="py-2 pr-4">Category</th>
+                    <th className="py-2 pr-4">Priority</th>
+                    <th className="py-2 pr-4">Time</th>
+                    <th className="py-2 pr-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {templates.map((template) => (
+                    <tr key={template.id} className="border-b border-gray-200">
+                      <td className="py-2 pr-4">
+                        <div className="font-medium text-gray-800">{template.title}</div>
+                        {template.description && (
+                          <div className="text-xs text-gray-500">{template.description}</div>
+                        )}
+                      </td>
+                      <td className="py-2 pr-4">
+                        <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-xs capitalize">
+                          {template.category}
+                        </span>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <span className={`px-2 py-0.5 rounded text-xs capitalize ${
+                          template.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                          template.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                          template.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {template.priority}
+                        </span>
+                      </td>
+                      <td className="py-2 pr-4 text-gray-700">{template.time_to_complete_minutes} min</td>
+                      <td className="py-2 pr-4">
+                        <button
+                          onClick={() => handleDeleteTemplate(template.id)}
+                          className="text-red-600 hover:text-red-800 text-xs"
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+    </Tile>
+  );
+};
+
 const AdminPanel = ({ onBack, onLogout }) => {
   return (
     <div className="min-h-screen bg-gray-100">
@@ -345,6 +596,7 @@ const AdminPanel = ({ onBack, onLogout }) => {
         <TileLayout>
           <LoginAttemptsTile />
           <TeamManagementTile />
+          <TaskTemplateLibraryTile />
           <FeedbackListTile />
           <TaskPlanner />
           <Calendar />
