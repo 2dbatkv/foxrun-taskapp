@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.get("/login-attempts", response_model=List[schemas.LoginAttempt])
+@router.get("/login-attempts")
 def get_login_attempts(
     limit: int = 100,
 ):
@@ -31,7 +31,7 @@ def get_login_attempts(
     return attempts[:limit]
 
 
-@router.get("/access-codes", response_model=List[schemas.AccessCodeInfo])
+@router.get("/access-codes")
 def get_access_codes():
     # Read from JSON storage
     codes = json_storage.get_all("access_codes")
