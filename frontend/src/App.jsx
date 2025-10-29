@@ -163,10 +163,8 @@ function App() {
       <main className="max-w-7xl mx-auto px-4 py-6">
         <SearchBar onResults={handleSearchResults} />
 
-        <Dashboard />
-
         {searchResults && (
-          <div>
+          <div className="mb-6">
             <button
               onClick={clearSearch}
               className="mb-4 text-blue-500 hover:text-blue-700 underline"
@@ -177,6 +175,8 @@ function App() {
             <SearchResults results={searchResults} isAI={isAISearch} />
           </div>
         )}
+
+        <Dashboard />
 
         <div className="mb-6">
           <TaskPlanner />
