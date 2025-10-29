@@ -15,12 +15,20 @@ router = APIRouter(
 
 def _parse_reminder_dates(reminder: dict) -> dict:
     """Parse ISO string dates back to datetime objects for Pydantic validation"""
+    # Parse datetime strings to datetime objects
     if reminder.get('remind_at') and isinstance(reminder['remind_at'], str):
         reminder['remind_at'] = datetime.fromisoformat(reminder['remind_at'])
     if reminder.get('created_at') and isinstance(reminder['created_at'], str):
         reminder['created_at'] = datetime.fromisoformat(reminder['created_at'])
     if reminder.get('updated_at') and isinstance(reminder['updated_at'], str):
         reminder['updated_at'] = datetime.fromisoformat(reminder['updated_at'])
+
+    # Add missing fields with defaults for backwards compatibility
+    if 'is_completed' not in reminder:
+        reminder['is_completed'] = False
+    if 'is_active' not in reminder:
+        reminder['is_active'] = True
+
     return reminder
 
 
