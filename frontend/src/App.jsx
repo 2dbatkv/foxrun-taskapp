@@ -43,6 +43,13 @@ function App() {
     setInitializing(false);
   }, []);
 
+  // Scroll to top when authenticated view renders
+  useEffect(() => {
+    if (auth.authenticated && !initializing) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [auth.authenticated, initializing]);
+
   const handleSearchResults = (results, isAI) => {
     setSearchResults(results);
     setIsAISearch(isAI);
