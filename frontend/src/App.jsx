@@ -55,10 +55,21 @@ function App() {
   // Use useLayoutEffect to run synchronously before browser paint
   useLayoutEffect(() => {
     if (auth.authenticated && !initializing) {
+      // Force scroll to top immediately
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
       window.scrollTo(0, 0);
       topRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
     }
   }, [auth.authenticated, initializing, showAdminView]);
+
+  // Additional scroll lock during initial render
+  useLayoutEffect(() => {
+    if (auth.authenticated) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  });
 
   const handleSearchResults = (results, isAI) => {
     setSearchResults(results);

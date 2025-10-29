@@ -696,9 +696,18 @@ const AdminPanel = ({ onBack, onLogout }) => {
 
   // Scroll to top when admin panel mounts
   useLayoutEffect(() => {
+    // Force scroll to top with multiple methods
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     window.scrollTo(0, 0);
     topRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
   }, []);
+
+  // Additional scroll lock during render
+  useLayoutEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  });
 
   return (
     <div className="min-h-screen bg-gray-100">
