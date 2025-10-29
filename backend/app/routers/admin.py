@@ -20,20 +20,25 @@ router = APIRouter(
 @router.get("/login-attempts", response_model=List[schemas.LoginAttempt])
 def get_login_attempts(
     limit: int = 100,
-    db: Session = Depends(get_db),
 ):
-    attempts = (
-        db.query(models.LoginAttempt)
-        .order_by(models.LoginAttempt.created_at.desc())
-        .limit(limit)
-        .all()
-    )
-    return attempts
+    # Read from JSON storage
+    attempts = json_storage.get_all("login_attempts")
+
+    # Sort by created_at descending (most recent first)
+    attempts.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+
+    # Apply limit
+    return attempts[:limit]
 
 
 @router.get("/access-codes", response_model=List[schemas.AccessCodeInfo])
-def get_access_codes(db: Session = Depends(get_db)):
-    codes = db.query(models.AccessCode).order_by(models.AccessCode.label.asc()).all()
+def get_access_codes():
+    # Read from JSON storage
+    codes = json_storage.get_all("access_codes")
+
+    # Sort by label ascending
+    codes.sort(key=lambda x: x.get("label", ""))
+
     return codes
 
 
