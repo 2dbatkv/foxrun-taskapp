@@ -103,6 +103,13 @@ const Dashboard = () => {
         };
       });
 
+      // Helper function to normalize date to just date part (no time)
+      const normalizeDate = (dateString) => {
+        const d = new Date(dateString);
+        d.setHours(0, 0, 0, 0);
+        return d;
+      };
+
       // Sum up task times for active and completed tasks
       tasks.forEach(task => {
         if (!task.assignee) return;
@@ -113,15 +120,17 @@ const Dashboard = () => {
         if (workloadTimeRange === 'daily') {
           // Daily view: count tasks due today OR completed today
           if (isActive && task.due_date) {
-            const taskDueDate = new Date(task.due_date);
-            if (taskDueDate >= startDate && taskDueDate <= endDate) {
+            const taskDueDate = normalizeDate(task.due_date);
+            const todayNormalized = normalizeDate(today);
+            if (taskDueDate.getTime() === todayNormalized.getTime()) {
               if (workloadByPerson[task.assignee]) {
                 workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
               }
             }
           } else if (isCompleted && task.completed_at) {
-            const completedDate = new Date(task.completed_at);
-            if (completedDate >= startDate && completedDate <= endDate) {
+            const completedDate = normalizeDate(task.completed_at);
+            const todayNormalized = normalizeDate(today);
+            if (completedDate.getTime() === todayNormalized.getTime()) {
               if (workloadByPerson[task.assignee]) {
                 workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
               }
