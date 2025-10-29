@@ -103,11 +103,13 @@ const Dashboard = () => {
         };
       });
 
-      // Helper function to normalize date to just date part (no time)
-      const normalizeDate = (dateString) => {
+      // Helper function to check if a date matches today (ignoring time and timezone)
+      const isToday = (dateString) => {
         const d = new Date(dateString);
-        d.setHours(0, 0, 0, 0);
-        return d;
+        const now = new Date();
+        return d.getFullYear() === now.getFullYear() &&
+               d.getMonth() === now.getMonth() &&
+               d.getDate() === now.getDate();
       };
 
       // Sum up task times ONLY for completed tasks
@@ -117,10 +119,7 @@ const Dashboard = () => {
 
         if (workloadTimeRange === 'daily') {
           // Daily view: only count tasks completed TODAY
-          const completedDate = normalizeDate(task.completed_at);
-          const todayNormalized = normalizeDate(today);
-
-          if (completedDate.getTime() === todayNormalized.getTime()) {
+          if (isToday(task.completed_at)) {
             if (workloadByPerson[task.assignee]) {
               workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
             }
