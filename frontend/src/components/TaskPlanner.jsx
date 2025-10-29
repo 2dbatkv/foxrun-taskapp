@@ -230,12 +230,18 @@ const TaskPlanner = () => {
               <option value="cancelled">Cancelled</option>
             </select>
           </div>
-          <input
-            type="date"
-            value={formData.due_date}
-            onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-            className="w-full p-2 mb-2 border rounded"
-          />
+          <div className="mb-2">
+            <label className="block text-sm text-gray-600 mb-1" htmlFor="dueDate">
+              Due Date
+            </label>
+            <input
+              id="dueDate"
+              type="date"
+              value={formData.due_date}
+              onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+              className="w-full p-2 border rounded"
+            />
+          </div>
           <input
             type="text"
             placeholder="Assignee (e.g., Aaron)"
