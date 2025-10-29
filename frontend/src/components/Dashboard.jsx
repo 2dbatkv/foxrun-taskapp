@@ -28,9 +28,6 @@ const Dashboard = () => {
       const statusCounts = { todo: 0, in_progress: 0, completed: 0, cancelled: 0 };
       const dueSoon = [];
 
-      const now = new Date();
-      const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-
       tasks.forEach(task => {
         // Count by priority
         if (task.priority) priorityCounts[task.priority]++;
@@ -38,12 +35,9 @@ const Dashboard = () => {
         // Count by status
         if (task.status) statusCounts[task.status]++;
 
-        // Check if due soon
+        // Check if task has a due date and is active (not completed/cancelled)
         if (task.due_date && task.status !== 'completed' && task.status !== 'cancelled') {
-          const dueDate = new Date(task.due_date);
-          if (dueDate >= now && dueDate <= sevenDaysFromNow) {
-            dueSoon.push(task);
-          }
+          dueSoon.push(task);
         }
       });
 
@@ -248,15 +242,15 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Tasks Due Soon */}
+        {/* Active Tasks with Due Dates */}
         <div className="bg-gradient-to-br from-purple-50 to-white p-4 rounded-lg border border-purple-200">
           <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
             <Clock size={16} />
-            Due This Week ({taskStats.dueSoon.length})
+            Active Tasks ({taskStats.dueSoon.length})
           </h3>
           <div className="space-y-2">
             {taskStats.dueSoon.length === 0 ? (
-              <p className="text-xs text-gray-500 italic">No tasks due this week</p>
+              <p className="text-xs text-gray-500 italic">No active tasks with due dates</p>
             ) : (
               taskStats.dueSoon.map((task) => (
                 <div key={task.id} className="text-xs">
