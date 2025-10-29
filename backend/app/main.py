@@ -7,6 +7,7 @@ from app.seed import ensure_default_access_codes
 from app.routers import (
     admin,
     auth,
+    auth_json,
     calendar_json,
     chat,
     documents_json,
@@ -25,9 +26,16 @@ from app.routers import calendar, documents, knowledge, reminders, search, tasks
 settings = get_settings()
 
 # Initialize database tables and default access codes
-Base.metadata.create_all(bind=engine)
-with SessionLocal() as session:
-    ensure_default_access_codes(session)
+try:
+    Base.metadata.create_all(bind=engine)
+    with SessionLocal() as session:
+        ensure_default_access_codes(session)
+except Exception as e:
+    print(f"Warning: Database initialization failed: {e}")
+    if not settings.use_json_storage:
+        print("ERROR: Database is required when JSON storage is disabled")
+        raise
+    print("Continuing with JSON storage mode...")
 
 app = FastAPI(
     title="Task Planner API",
@@ -45,8 +53,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include authentication first
-app.include_router(auth.router)
+# Include authentication first (use JSON-based auth when using JSON storage)
+if settings.use_json_storage:
+    app.include_router(auth_json.router)
+else:
+    app.include_router(auth.router)
 
 if settings.use_json_storage:
     app.include_router(tasks_json.router)

@@ -43,12 +43,15 @@ function App() {
     setInitializing(false);
   }, []);
 
-  // Scroll to top when authenticated view renders
+  // Scroll to top when authenticated view renders or page refreshes
   useEffect(() => {
     if (auth.authenticated && !initializing) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      // Use setTimeout to ensure DOM is fully rendered
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }, 0);
     }
-  }, [auth.authenticated, initializing]);
+  }, [auth.authenticated, initializing, showAdminView]);
 
   const handleSearchResults = (results, isAI) => {
     setSearchResults(results);

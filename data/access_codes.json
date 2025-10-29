@@ -1,0 +1,59 @@
+{
+  "access_codes": [
+    {
+      "label": "SAM (9127SAM)",
+      "code_hash": "07275b11ad9892de2e79a0cf2ce81d4377640be35edd2ae8432a6a5507f76198",
+      "role": "member",
+      "is_active": true,
+      "id": 1,
+      "created_at": "2025-10-29T14:57:41.252043",
+      "updated_at": "2025-10-29T14:57:41.252043"
+    },
+    {
+      "label": "RFB - Admin (9566RFB)",
+      "code_hash": "da4f6b83606cac6f03cc399e2e6756cc59ba6ac3b3f17d26e0db8aa1a7110be3",
+      "role": "admin",
+      "is_active": true,
+      "id": 2,
+      "created_at": "2025-10-29T14:57:41.252261",
+      "updated_at": "2025-10-29T14:57:41.252261"
+    },
+    {
+      "label": "AJB - Admin (9553AJB)",
+      "code_hash": "309bdbf3d3cfd86385260d2383d6e77b6e492f7bffeb62aea05b29cad2438b05",
+      "role": "admin",
+      "is_active": true,
+      "id": 3,
+      "created_at": "2025-10-29T14:57:41.253504",
+      "updated_at": "2025-10-29T14:57:41.253504"
+    },
+    {
+      "label": "ZBB (1112ZBB)",
+      "code_hash": "a469151d0f3b34a6ecee9ee1b85e0e41eb1a518dbeaf1d63fef090aec850afbc",
+      "role": "member",
+      "is_active": true,
+      "id": 4,
+      "created_at": "2025-10-29T14:57:41.253944",
+      "updated_at": "2025-10-29T14:57:41.253944"
+    },
+    {
+      "label": "TBB (7226TBB)",
+      "code_hash": "abeb34edb01b16b832f29b711d67b407b1662a37c4ac54d07aa7ba54b604ec6b",
+      "role": "member",
+      "is_active": true,
+      "id": 5,
+      "created_at": "2025-10-29T14:57:41.254399",
+      "updated_at": "2025-10-29T14:57:41.254399"
+    },
+    {
+      "label": "AUR (9807AUR)",
+      "code_hash": "5a9cdeac6b5a5f8c9108ef7e90b069474497e419192bc9a98ad2446d993856d4",
+      "role": "member",
+      "is_active": true,
+      "id": 6,
+      "created_at": "2025-10-29T14:57:41.254879",
+      "updated_at": "2025-10-29T14:57:41.254879"
+    }
+  ],
+  "login_attempts": []
+}
