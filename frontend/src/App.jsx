@@ -71,6 +71,28 @@ function App() {
     }
   });
 
+  // Aggressive scroll prevention for first second after auth
+  useLayoutEffect(() => {
+    if (auth.authenticated && !initializing) {
+      // Lock scroll position
+      const preventScroll = (e) => {
+        window.scrollTo(0, 0);
+      };
+
+      window.addEventListener('scroll', preventScroll, { passive: false });
+
+      // Remove lock after 1 second (enough time for components to load)
+      const timer = setTimeout(() => {
+        window.removeEventListener('scroll', preventScroll);
+      }, 1000);
+
+      return () => {
+        window.removeEventListener('scroll', preventScroll);
+        clearTimeout(timer);
+      };
+    }
+  }, [auth.authenticated, initializing, showAdminView]);
+
   const handleSearchResults = (results, isAI) => {
     setSearchResults(results);
     setIsAISearch(isAI);

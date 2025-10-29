@@ -709,6 +709,24 @@ const AdminPanel = ({ onBack, onLogout }) => {
     document.body.scrollTop = 0;
   });
 
+  // Aggressive scroll prevention for first second
+  useLayoutEffect(() => {
+    const preventScroll = (e) => {
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('scroll', preventScroll, { passive: false });
+
+    const timer = setTimeout(() => {
+      window.removeEventListener('scroll', preventScroll);
+    }, 1000);
+
+    return () => {
+      window.removeEventListener('scroll', preventScroll);
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div ref={topRef} />
