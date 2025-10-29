@@ -14,10 +14,23 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.Task])
-def get_tasks(skip: int = 0, limit: int = 100):
-    """Get all tasks from JSON"""
+def get_tasks(skip: int = 0, limit: int = 100, include_archived: bool = False):
+    """Get all tasks from JSON (excluding archived by default)"""
     tasks = json_storage.get_all("tasks")
+
+    # Filter out archived tasks unless specifically requested
+    if not include_archived:
+        tasks = [t for t in tasks if not t.get('is_archived', False)]
+
     return tasks[skip:skip + limit]
+
+
+@router.get("/archived", response_model=List[schemas.Task])
+def get_archived_tasks(skip: int = 0, limit: int = 100):
+    """Get only archived tasks"""
+    tasks = json_storage.get_all("tasks")
+    archived_tasks = [t for t in tasks if t.get('is_archived', False)]
+    return archived_tasks[skip:skip + limit]
 
 
 @router.get("/{task_id}", response_model=schemas.Task)
@@ -50,6 +63,24 @@ def update_task(task_id: int, task: schemas.TaskUpdate):
     if not updated_task:
         raise HTTPException(status_code=404, detail="Task not found")
 
+    return updated_task
+
+
+@router.patch("/{task_id}/archive", response_model=schemas.Task)
+def archive_task(task_id: int):
+    """Archive a task"""
+    updated_task = json_storage.update("tasks", task_id, {"is_archived": True})
+    if not updated_task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return updated_task
+
+
+@router.patch("/{task_id}/unarchive", response_model=schemas.Task)
+def unarchive_task(task_id: int):
+    """Unarchive a task"""
+    updated_task = json_storage.update("tasks", task_id, {"is_archived": False})
+    if not updated_task:
+        raise HTTPException(status_code=404, detail="Task not found")
     return updated_task
 
 

@@ -55,3 +55,42 @@ def update_team_members(team_data: Dict[str, List[Dict[str, Any]]]) -> Dict[str,
     json_storage._write_json("team", team_data)
 
     return {"message": "Team members updated successfully"}
+
+
+@router.get("/database")
+def get_database_viewer() -> Dict[str, Any]:
+    """Get all available data types for database viewer (admin only)"""
+    data_types = [
+        "tasks",
+        "calendar",
+        "reminders",
+        "knowledge",
+        "documents",
+        "feedback",
+        "team",
+        "task_templates",
+        "login_attempts"
+    ]
+    return {"data_types": data_types}
+
+
+@router.get("/database/{data_type}")
+def get_database_data(data_type: str) -> Dict[str, Any]:
+    """Get all data for a specific data type (admin only)"""
+    valid_types = [
+        "tasks", "calendar", "reminders", "knowledge", "documents",
+        "feedback", "team", "task_templates", "login_attempts"
+    ]
+
+    if data_type not in valid_types:
+        return {"error": f"Invalid data type. Must be one of: {', '.join(valid_types)}"}
+
+    try:
+        data = json_storage.get_all(data_type)
+        return {
+            "data_type": data_type,
+            "count": len(data),
+            "data": data
+        }
+    except Exception as e:
+        return {"error": f"Failed to load data: {str(e)}"}

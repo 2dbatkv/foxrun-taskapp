@@ -48,9 +48,12 @@ api.interceptors.response.use(
 // Tasks API
 export const tasksAPI = {
   getAll: () => api.get('/tasks/'),
+  getArchived: () => api.get('/tasks/archived'),
   getById: (id) => api.get(`/tasks/${id}`),
   create: (data) => api.post('/tasks/', data),
   update: (id, data) => api.put(`/tasks/${id}`, data),
+  archive: (id) => api.patch(`/tasks/${id}/archive`),
+  unarchive: (id) => api.patch(`/tasks/${id}/unarchive`),
   delete: (id) => api.delete(`/tasks/${id}`),
 };
 
@@ -128,6 +131,8 @@ export const adminAPI = {
   getAccessCodes: () => api.get('/admin/access-codes'),
   getTeamMembers: () => api.get('/admin/team'),
   updateTeamMembers: (teamData) => api.put('/admin/team', teamData),
+  getDatabaseTypes: () => api.get('/admin/database'),
+  getDatabaseData: (dataType) => api.get(`/admin/database/${dataType}`),
 };
 
 export const feedbackAPI = {

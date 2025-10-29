@@ -13,6 +13,7 @@ class TaskBase(BaseModel):
     due_date: Optional[datetime] = None
     assignee: Optional[str] = None
     time_to_complete_minutes: int = Field(..., ge=1)
+    is_archived: bool = False
 
 
 class TaskCreate(TaskBase):
@@ -27,6 +28,7 @@ class TaskUpdate(BaseModel):
     due_date: Optional[datetime] = None
     assignee: Optional[str] = None
     time_to_complete_minutes: Optional[int] = Field(default=None, ge=1)
+    is_archived: Optional[bool] = None
 
 
 class Task(TaskBase):

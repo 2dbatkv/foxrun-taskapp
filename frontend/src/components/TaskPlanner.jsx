@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Edit2, Trash2 } from 'lucide-react';
+import { Plus, X, Edit2, Trash2, Archive } from 'lucide-react';
 import Tile from './Tile';
 import { tasksAPI, taskTemplatesAPI } from '../services/api';
 
@@ -95,6 +95,20 @@ const TaskPlanner = () => {
         fetchTasks();
       } catch (error) {
         console.error('Error deleting task:', error);
+      }
+    }
+  };
+
+  const handleArchive = async (id) => {
+    if (window.confirm('Are you sure you want to archive this task?')) {
+      try {
+        await tasksAPI.archive(id);
+        setFormSuccess('Task archived successfully.');
+        fetchTasks();
+        setTimeout(() => setFormSuccess(''), 3000);
+      } catch (error) {
+        console.error('Error archiving task:', error);
+        setFormError('Unable to archive task. Please try again.');
       }
     }
   };
@@ -300,12 +314,21 @@ const TaskPlanner = () => {
                   <button
                     onClick={() => handleEdit(task)}
                     className="text-blue-500 hover:text-blue-700"
+                    title="Edit task"
                   >
                     <Edit2 size={16} />
                   </button>
                   <button
+                    onClick={() => handleArchive(task.id)}
+                    className="text-orange-500 hover:text-orange-700"
+                    title="Archive task"
+                  >
+                    <Archive size={16} />
+                  </button>
+                  <button
                     onClick={() => handleDelete(task.id)}
                     className="text-red-500 hover:text-red-700"
+                    title="Delete task"
                   >
                     <Trash2 size={16} />
                   </button>

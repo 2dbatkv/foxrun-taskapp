@@ -8,7 +8,7 @@ import KnowledgeBase from './KnowledgeBase';
 import Documents from './Documents';
 import ChatInterface from './ChatInterface';
 import FeedbackForm from './FeedbackForm';
-import { adminAPI, feedbackAPI, taskTemplatesAPI } from '../services/api';
+import { adminAPI, feedbackAPI, taskTemplatesAPI, tasksAPI } from '../services/api';
 
 const LoginAttemptsTile = () => {
   const [attempts, setAttempts] = useState([]);
@@ -691,6 +691,271 @@ const TaskTemplateLibraryTile = () => {
   );
 };
 
+const ArchivedTasksTile = () => {
+  const [archivedTasks, setArchivedTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const fetchArchivedTasks = async () => {
+    try {
+      setLoading(true);
+      const response = await tasksAPI.getArchived();
+      setArchivedTasks(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load archived tasks.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchArchivedTasks();
+  }, []);
+
+  const handleUnarchive = async (id) => {
+    if (!confirm('Unarchive this task?')) return;
+    try {
+      await tasksAPI.unarchive(id);
+      setSuccessMessage('Task unarchived successfully!');
+      fetchArchivedTasks();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to unarchive task.');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to permanently delete this task?')) return;
+    try {
+      await tasksAPI.delete(id);
+      setSuccessMessage('Task deleted successfully!');
+      fetchArchivedTasks();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to delete task.');
+    }
+  };
+
+  const getPriorityColor = (priority) => {
+    const colors = {
+      low: 'bg-blue-100 text-blue-800',
+      medium: 'bg-yellow-100 text-yellow-800',
+      high: 'bg-orange-100 text-orange-800',
+      urgent: 'bg-red-100 text-red-800',
+    };
+    return colors[priority] || colors.medium;
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      todo: 'bg-gray-100 text-gray-800',
+      in_progress: 'bg-blue-100 text-blue-800',
+      completed: 'bg-green-100 text-green-800',
+      cancelled: 'bg-red-100 text-red-800',
+    };
+    return colors[status] || colors.todo;
+  };
+
+  return (
+    <Tile
+      title="Archived Tasks"
+      className="lg:col-span-3"
+      actions={
+        <button
+          onClick={fetchArchivedTasks}
+          className="text-blue-500 hover:text-blue-700 text-sm"
+          type="button"
+        >
+          Refresh
+        </button>
+      }
+    >
+      {loading ? (
+        <p className="text-gray-500">Loading archived tasks...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <div>
+          {successMessage && (
+            <div className="mb-3 p-2 bg-green-100 text-green-700 rounded text-sm">
+              {successMessage}
+            </div>
+          )}
+
+          {archivedTasks.length === 0 ? (
+            <p className="text-gray-500">No archived tasks.</p>
+          ) : (
+            <div className="space-y-2">
+              {archivedTasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="p-3 bg-gray-50 rounded-lg border border-gray-200"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-semibold text-gray-800">{task.title}</h3>
+                      {task.description && (
+                        <p className="text-sm text-gray-600">{task.description}</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleUnarchive(task.id)}
+                        className="text-green-600 hover:text-green-800 text-xs"
+                        type="button"
+                      >
+                        Unarchive
+                      </button>
+                      <button
+                        onClick={() => handleDelete(task.id)}
+                        className="text-red-600 hover:text-red-800 text-xs"
+                        type="button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    <span className={`text-xs px-2 py-1 rounded ${getPriorityColor(task.priority)}`}>
+                      {task.priority}
+                    </span>
+                    <span className={`text-xs px-2 py-1 rounded ${getStatusColor(task.status)}`}>
+                      {task.status.replace('_', ' ')}
+                    </span>
+                    {task.assignee && (
+                      <span className="text-xs px-2 py-1 rounded bg-indigo-100 text-indigo-800">
+                        {task.assignee}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </Tile>
+  );
+};
+
+const DatabaseViewerTile = () => {
+  const [dataTypes, setDataTypes] = useState([]);
+  const [selectedType, setSelectedType] = useState('');
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDataTypes = async () => {
+      try {
+        const response = await adminAPI.getDatabaseTypes();
+        setDataTypes(response.data.data_types || []);
+      } catch (err) {
+        setError('Failed to load data types.');
+      }
+    };
+    fetchDataTypes();
+  }, []);
+
+  const handleTypeSelect = async (type) => {
+    if (!type) {
+      setSelectedType('');
+      setData(null);
+      return;
+    }
+
+    setSelectedType(type);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await adminAPI.getDatabaseData(type);
+      setData(response.data);
+    } catch (err) {
+      setError('Failed to load data.');
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadJSON = () => {
+    if (!data) return;
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${data.data_type}_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <Tile
+      title="Database Viewer"
+      className="lg:col-span-3"
+      actions={
+        data && (
+          <button
+            onClick={downloadJSON}
+            className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+            type="button"
+          >
+            Download JSON
+          </button>
+        )
+      }
+    >
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Select Data Type
+        </label>
+        <select
+          value={selectedType}
+          onChange={(e) => handleTypeSelect(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded text-sm"
+        >
+          <option value="">-- Select a data type --</option>
+          {dataTypes.map((type) => (
+            <option key={type} value={type}>
+              {type.replace('_', ' ').toUpperCase()}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {loading && <p className="text-gray-500">Loading data...</p>}
+
+      {error && <p className="text-red-500">{error}</p>}
+
+      {data && !loading && (
+        <div>
+          <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded">
+            <p className="text-sm text-blue-800">
+              <span className="font-semibold">Data Type:</span> {data.data_type} |
+              <span className="font-semibold ml-2">Record Count:</span> {data.count}
+            </p>
+          </div>
+
+          <div className="max-h-96 overflow-auto bg-gray-50 border border-gray-300 rounded p-3">
+            <pre className="text-xs text-gray-800 whitespace-pre-wrap font-mono">
+              {JSON.stringify(data.data, null, 2)}
+            </pre>
+          </div>
+        </div>
+      )}
+
+      {!selectedType && !loading && !error && (
+        <p className="text-gray-500 text-sm">Select a data type above to view its contents.</p>
+      )}
+    </Tile>
+  );
+};
+
 const AdminPanel = ({ onBack, onLogout }) => {
   const topRef = useRef(null);
 
@@ -760,6 +1025,8 @@ const AdminPanel = ({ onBack, onLogout }) => {
           <LoginAttemptsTile />
           <TeamManagementTile />
           <TaskTemplateLibraryTile />
+          <ArchivedTasksTile />
+          <DatabaseViewerTile />
           <FeedbackListTile />
           <TaskPlanner />
           <Calendar />
