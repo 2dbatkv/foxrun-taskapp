@@ -106,6 +106,7 @@ const FeedbackListTile = () => {
   const [feedbackReports, setFeedbackReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const fetchFeedback = async () => {
     try {
@@ -117,6 +118,18 @@ const FeedbackListTile = () => {
       setError('Failed to load feedback submissions.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteFeedback = async (id) => {
+    if (!confirm('Are you sure you want to delete this feedback?')) return;
+    try {
+      await feedbackAPI.delete(id);
+      setSuccessMessage('Feedback deleted successfully!');
+      fetchFeedback();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to delete feedback.');
     }
   };
 
@@ -142,27 +155,46 @@ const FeedbackListTile = () => {
         <p className="text-gray-500">Loading feedback...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
-      ) : feedbackReports.length === 0 ? (
-        <p className="text-gray-500">No feedback submitted yet.</p>
       ) : (
-        <div className="space-y-3">
-          {feedbackReports.map((item) => (
-            <div key={item.id} className="p-3 border border-gray-200 rounded-md bg-white shadow-sm">
-              <div className="flex justify-between items-start gap-4">
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">{item.category}</p>
-                  <p className="text-xs text-gray-500">
-                    {item.name || 'Anonymous'}
-                    {item.email ? ` · ${item.email}` : ''}
-                  </p>
-                </div>
-                <span className="text-xs text-gray-500 whitespace-nowrap">
-                  {new Date(item.created_at).toLocaleString()}
-                </span>
-              </div>
-              <p className="mt-2 text-sm text-gray-700 whitespace-pre-wrap">{item.message}</p>
+        <div>
+          {successMessage && (
+            <div className="mb-3 p-2 bg-green-100 text-green-700 rounded text-sm">
+              {successMessage}
             </div>
-          ))}
+          )}
+          {feedbackReports.length === 0 ? (
+            <p className="text-gray-500">No feedback submitted yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {feedbackReports.map((item) => (
+                <div key={item.id} className="p-3 border border-gray-200 rounded-md bg-white shadow-sm">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-gray-800">{item.category}</p>
+                      <p className="text-xs text-gray-500">
+                        {item.name || 'Anonymous'}
+                        {item.email ? ` · ${item.email}` : ''}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500 whitespace-nowrap">
+                        {new Date(item.created_at).toLocaleString()}
+                      </span>
+                      <button
+                        onClick={() => handleDeleteFeedback(item.id)}
+                        className="text-red-600 hover:text-red-800 text-xs"
+                        type="button"
+                        title="Delete feedback"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-700 whitespace-pre-wrap">{item.message}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </Tile>

@@ -133,6 +133,7 @@ export const adminAPI = {
 export const feedbackAPI = {
   submit: (data) => api.post('/feedback/', data),
   getAll: () => api.get('/feedback/'),
+  delete: (id) => api.delete(`/feedback/${id}`),
 };
 
 export default api;

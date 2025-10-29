@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app import schemas
 from app.models import AccessRole
@@ -28,3 +28,15 @@ def list_feedback(
     # Newest first
     sorted_entries = sorted(entries, key=lambda item: item.get("created_at", ""), reverse=True)
     return sorted_entries
+
+
+@router.delete("/{feedback_id}")
+def delete_feedback(
+    feedback_id: int,
+    user=Depends(require_role(AccessRole.ADMIN)),
+):
+    """Delete a feedback entry (admin only)"""
+    success = json_storage.delete("feedback", feedback_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Feedback not found")
+    return {"message": "Feedback deleted successfully"}
