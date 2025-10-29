@@ -4,10 +4,27 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Fox Run Task Planner</title>
+    <style>
+      /* Prevent scroll during initial page load */
+      html {
+        overflow: hidden;
+      }
+      html.loaded {
+        overflow: visible;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Enable scroll after page fully loads
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          document.documentElement.classList.add('loaded');
+        }, 100);
+      });
+    </script>
   </body>
 </html>
