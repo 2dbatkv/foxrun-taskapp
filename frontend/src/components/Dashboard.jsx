@@ -103,23 +103,42 @@ const Dashboard = () => {
         };
       });
 
-      // Sum up task times for active tasks
+      // Sum up task times for active and completed tasks
       tasks.forEach(task => {
-        if (task.assignee && (task.status === 'todo' || task.status === 'in_progress')) {
-          if (workloadTimeRange === 'daily') {
-            // Daily view: only count tasks due today
-            if (task.due_date) {
-              const taskDueDate = new Date(task.due_date);
-              if (taskDueDate >= startDate && taskDueDate <= endDate) {
-                if (workloadByPerson[task.assignee]) {
-                  workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
-                }
+        if (!task.assignee) return;
+
+        const isActive = task.status === 'todo' || task.status === 'in_progress';
+        const isCompleted = task.status === 'completed';
+
+        if (workloadTimeRange === 'daily') {
+          // Daily view: count tasks due today OR completed today
+          if (isActive && task.due_date) {
+            const taskDueDate = new Date(task.due_date);
+            if (taskDueDate >= startDate && taskDueDate <= endDate) {
+              if (workloadByPerson[task.assignee]) {
+                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
               }
             }
-          } else {
-            // Weekly view: count ALL active tasks assigned to the person
+          } else if (isCompleted && task.completed_at) {
+            const completedDate = new Date(task.completed_at);
+            if (completedDate >= startDate && completedDate <= endDate) {
+              if (workloadByPerson[task.assignee]) {
+                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
+              }
+            }
+          }
+        } else {
+          // Weekly view: count ALL active tasks + tasks completed this week
+          if (isActive) {
             if (workloadByPerson[task.assignee]) {
               workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
+            }
+          } else if (isCompleted && task.completed_at) {
+            const completedDate = new Date(task.completed_at);
+            if (completedDate >= startDate && completedDate <= endDate) {
+              if (workloadByPerson[task.assignee]) {
+                workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
+              }
             }
           }
         }
