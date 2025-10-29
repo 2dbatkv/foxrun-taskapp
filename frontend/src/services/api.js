@@ -116,6 +116,8 @@ export const teamAPI = {
 export const adminAPI = {
   getLoginAttempts: (limit = 100) => api.get('/admin/login-attempts', { params: { limit } }),
   getAccessCodes: () => api.get('/admin/access-codes'),
+  getTeamMembers: () => api.get('/admin/team'),
+  updateTeamMembers: (teamData) => api.put('/admin/team', teamData),
 };
 
 export const feedbackAPI = {

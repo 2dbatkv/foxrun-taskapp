@@ -169,6 +169,150 @@ const FeedbackListTile = () => {
   );
 };
 
+const TeamManagementTile = () => {
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const fetchTeamMembers = async () => {
+    try {
+      setLoading(true);
+      const response = await adminAPI.getTeamMembers();
+      setTeamMembers(response.data.team || []);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load team members.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeamMembers();
+  }, []);
+
+  const handleAddMember = () => {
+    setTeamMembers([
+      ...teamMembers,
+      { name: '', daily_capacity_minutes: 480, role: 'Family Member' },
+    ]);
+  };
+
+  const handleUpdateMember = (index, field, value) => {
+    const updated = [...teamMembers];
+    if (field === 'daily_capacity_minutes') {
+      updated[index][field] = parseInt(value, 10) || 0;
+    } else {
+      updated[index][field] = value;
+    }
+    setTeamMembers(updated);
+  };
+
+  const handleDeleteMember = (index) => {
+    setTeamMembers(teamMembers.filter((_, i) => i !== index));
+  };
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      setError(null);
+      setSuccessMessage('');
+      await adminAPI.updateTeamMembers({ team: teamMembers });
+      setSuccessMessage('Team members updated successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to save team members. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Tile
+      title="Team Management"
+      className="lg:col-span-3"
+      actions={
+        <div className="flex gap-2">
+          <button
+            onClick={handleAddMember}
+            className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+            type="button"
+          >
+            Add Member
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className={`bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 ${
+              saving ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            type="button"
+          >
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+      }
+    >
+      {loading ? (
+        <p className="text-gray-500">Loading team members...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <div>
+          {successMessage && (
+            <div className="mb-3 p-2 bg-green-100 text-green-700 rounded text-sm">
+              {successMessage}
+            </div>
+          )}
+          {teamMembers.length === 0 ? (
+            <p className="text-gray-500">No team members yet. Click "Add Member" to get started.</p>
+          ) : (
+            <div className="space-y-2">
+              {teamMembers.map((member, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col md:flex-row gap-2 p-3 border border-gray-200 rounded-md bg-white"
+                >
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={member.name}
+                    onChange={(e) => handleUpdateMember(index, 'name', e.target.value)}
+                    className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Capacity (minutes)"
+                    value={member.daily_capacity_minutes}
+                    onChange={(e) => handleUpdateMember(index, 'daily_capacity_minutes', e.target.value)}
+                    className="w-full md:w-40 px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Role"
+                    value={member.role}
+                    onChange={(e) => handleUpdateMember(index, 'role', e.target.value)}
+                    className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                  <button
+                    onClick={() => handleDeleteMember(index)}
+                    className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                    type="button"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </Tile>
+  );
+};
+
 const AdminPanel = ({ onBack, onLogout }) => {
   return (
     <div className="min-h-screen bg-gray-100">
@@ -200,6 +344,7 @@ const AdminPanel = ({ onBack, onLogout }) => {
       <main className="max-w-7xl mx-auto px-4 py-6">
         <TileLayout>
           <LoginAttemptsTile />
+          <TeamManagementTile />
           <FeedbackListTile />
           <TaskPlanner />
           <Calendar />
