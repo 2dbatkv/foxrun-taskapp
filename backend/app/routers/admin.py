@@ -115,13 +115,13 @@ def create_access_code(code_data: Dict[str, Any]) -> Dict[str, Any]:
     # Check if code already exists
     existing_codes = json_storage.get_all("access_codes")
     for existing in existing_codes:
-        if existing.get("code") == hash_code(code_data["code"]):
+        if existing.get("code_hash") == hash_code(code_data["code"]):
             raise HTTPException(status_code=400, detail="Access code already exists")
 
     # Create new access code entry
     new_code = {
         "id": max([c.get("id", 0) for c in existing_codes], default=0) + 1,
-        "code": hash_code(code_data["code"]),
+        "code_hash": hash_code(code_data["code"]),
         "label": code_data["label"],
         "role": code_data["role"],
         "is_active": code_data.get("is_active", True),
