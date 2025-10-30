@@ -1,200 +1,371 @@
-# Quick Start Guide
+# Fox Run Task Tracker - Quick Start Guide
 
-Get your Task Planner & Productivity Suite up and running in minutes!
+Get your family productivity system up and running in 10 minutes!
 
-## Prerequisites Checklist
+## 🎯 What You'll Get
 
-Before starting, ensure you have:
-- [ ] Python 3.8+ installed (`python3 --version`)
-- [ ] Node.js 18+ installed (`node --version`)
-- [ ] PostgreSQL installed and running
-- [ ] Anthropic API key (get one at https://console.anthropic.com/)
+After this guide, you'll have:
+- ✅ Local development environment running
+- ✅ Access to the production system at https://foxruntasks.netlify.app
+- ✅ Understanding of how to use all features
+- ✅ Knowledge of how to deploy updates
 
-## 5-Minute Setup
+## 🌐 Using the Production System (Fastest Start)
 
-### Step 1: PostgreSQL Database Setup (2 minutes)
+**Already deployed and running!**
+
+1. Visit: **https://foxruntasks.netlify.app**
+2. Log in with your access code (ask admin for your code)
+3. Start creating tasks, events, and using all features
+
+That's it! The system is live and ready to use.
+
+## 💻 Local Development Setup
+
+Want to develop locally or understand how it works? Follow these steps.
+
+### Prerequisites
+
+- [ ] Python 3.12+ (`python3 --version`)
+- [ ] Node.js 18+ (`node --version`)
+- [ ] Anthropic API key (optional, for AI features)
+- [ ] Git installed
+
+### Step 1: Clone the Repository (30 seconds)
 
 ```bash
-# Start PostgreSQL
-sudo systemctl start postgresql
-
-# Create database and user
-sudo -u postgres psql -c "CREATE DATABASE task_planner_db;"
-sudo -u postgres psql -c "CREATE USER taskuser WITH PASSWORD 'taskpass123';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE task_planner_db TO taskuser;"
+git clone https://github.com/2dbatkv/foxrun-taskapp.git
+cd foxrun-taskapp
 ```
 
-### Step 2: Backend Configuration (1 minute)
+### Step 2: Backend Setup (2 minutes)
 
 ```bash
-cd /home/ajbir/task-planner-app/backend
+cd backend
 
-# Create and configure .env file
-cat > .env << EOF
-DATABASE_URL=postgresql://taskuser:taskpass123@localhost/task_planner_db
-ANTHROPIC_API_KEY=your_api_key_here
+# Create virtual environment
+python3 -m venv venv
+
+# Activate it
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file
+cat > .env << 'EOF'
+USE_JSON_STORAGE=true
 SECRET_KEY=$(openssl rand -hex 32)
+ANTHROPIC_API_KEY=your_key_here_optional
+CORS_ORIGINS=http://localhost:5173
 EOF
-
-# Edit .env to add your Anthropic API key
-nano .env
 ```
 
-Replace `your_api_key_here` with your actual Anthropic API key.
+**Note:** If you don't have an Anthropic API key, AI features won't work but everything else will!
 
-### Step 3: Run Setup Script (2 minutes)
+### Step 3: Frontend Setup (1 minute)
 
 ```bash
-cd /home/ajbir/task-planner-app
-./setup.sh
+cd ../frontend
+
+# Install dependencies
+npm install
+
+# Create .env file
+echo "VITE_API_BASE_URL=http://localhost:8000" > .env
 ```
 
-This will:
-- Create Python virtual environment
-- Install backend dependencies
-- Install frontend dependencies
+### Step 4: Start the System (1 minute)
 
-## Running the Application
-
-### Option 1: Use the Start Script (Recommended)
-
+**Terminal 1 - Start Backend:**
 ```bash
-cd /home/ajbir/task-planner-app
-./start.sh
-```
-
-This starts both backend and frontend automatically!
-
-### Option 2: Manual Start
-
-**Terminal 1 - Backend:**
-```bash
-cd /home/ajbir/task-planner-app/backend
+cd backend
 source venv/bin/activate
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**Terminal 2 - Frontend:**
+Wait for: `Application startup complete.`
+
+**Terminal 2 - Start Frontend:**
 ```bash
-cd /home/ajbir/task-planner-app/frontend
+cd frontend
 npm run dev
 ```
 
-## Access Your Application
+Wait for: `Local: http://localhost:5173/`
 
-Once running, open your browser and visit:
+## 🚀 Access Your Local System
 
-- **Frontend App**: http://localhost:5173
-- **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
+Open your browser to:
+- **App**: http://localhost:5173
+- **API Docs**: http://localhost:8000/docs
+- **Health Check**: http://localhost:8000/health
 
-## First Steps
+## 🔐 Login
 
-1. **Create Your First Task**
-   - Click "New Task" in the Task Planner tile
-   - Fill in the details and save
+The system uses access codes instead of usernames/passwords. On first run, 6 default codes are created:
 
-2. **Schedule an Event**
-   - Click "New Event" in the Calendar tile
-   - Add your first meeting or appointment
+**Default Access Codes:**
+- Admin codes: `9566RFB`, `9553AJB` (full system access)
+- Member codes: `9127SAM`, `1112ZBB`, `7226TBB`, `9807AUR`
 
-3. **Try the AI Assistant**
-   - Scroll to the AI Assistant tile
-   - Ask Claude a question like "What tasks do I have?"
+*Note: These can be viewed in the Admin panel by logging in with an admin code.*
 
-4. **Search Everything**
-   - Use the search bar at the top
-   - Toggle AI search for intelligent results
+## 📝 First Steps - 5 Minute Tutorial
 
-## Common Issues & Solutions
+### 1. Login (30 seconds)
+1. Enter any access code from above
+2. Click "Sign In"
+3. You're in!
 
-### Issue: Database connection failed
-**Solution:**
+### 2. Create Your First Task (1 minute)
+1. Find the "Task Planner" tile
+2. Click "New Task"
+3. Fill in:
+   - Title: "Test Task"
+   - Priority: "High"
+   - Due Date: Tomorrow
+   - Assignee: Your name
+   - Time to complete: 60 minutes
+4. Click "Create Task"
+
+### 3. Use a Task Template (30 seconds)
+1. Click "New Task" again
+2. Use the template dropdown
+3. Select a pre-made template
+4. Notice how it pre-fills the form
+5. Click "Create Task"
+
+### 4. View Dashboard Analytics (30 seconds)
+1. Scroll to the "Dashboard Overview" tile
+2. See task priority breakdown
+3. See task status counts
+4. View active tasks
+5. Check team workload distribution (Today vs This Week)
+
+### 5. Try the AI Assistant (1 minute) *(requires API key)*
+1. Scroll to "AI Assistant" tile
+2. Type: "Help me organize my tasks"
+3. Claude will respond with intelligent suggestions
+4. Ask: "What tasks are due soon?"
+
+### 6. Use Global Search (30 seconds)
+1. Look at the top search bar
+2. Type any keyword
+3. See results from all categories
+4. Toggle "AI Search" for smart analysis
+
+### 7. Archive a Task (30 seconds)
+1. Mark a task as "Completed"
+2. Click the Archive icon (folder icon)
+3. Task moves to archived list
+4. Check Admin panel to see archived tasks
+
+## 👑 Admin Features (For Admin Access Codes Only)
+
+After logging in with an admin code, click "Admin Panel":
+
+### Login Activity Monitor
+- See all login attempts (success/failure)
+- Monitor IP addresses
+- Track timestamps
+
+### Team Management
+- Configure team members
+- Set daily capacity for each person
+- Manage roles
+
+### Task Template Library
+- Create new templates
+- Edit existing templates
+- Bulk import via JSON
+- Delete templates
+
+### Archived Tasks
+- View all archived tasks
+- Unarchive tasks
+- Permanently delete tasks
+
+### Database Viewer
+- Browse all system data
+- Download as JSON
+- Backup data
+
+### User Feedback
+- Review submitted feedback
+- Delete resolved items
+
+## 🔧 Common Commands
+
+### Backend
 ```bash
-# Check if PostgreSQL is running
-sudo systemctl status postgresql
+# Start backend
+cd backend
+source venv/bin/activate
+uvicorn app.main:app --reload
 
-# If not running, start it
-sudo systemctl start postgresql
+# View logs in real-time
+tail -f logs/app.log
+
+# Check health
+curl http://localhost:8000/health
 ```
 
-### Issue: Port 8000 already in use
-**Solution:**
+### Frontend
 ```bash
-# Find and kill the process using port 8000
+# Start development server
+cd frontend
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
+```bash
+# Find what's using port 8000
 lsof -i :8000
+
+# Kill it
 kill -9 <PID>
 ```
 
-### Issue: Anthropic API error
-**Solution:**
-- Verify your API key in `backend/.env`
-- Check your API key is active at https://console.anthropic.com/
-- Ensure no extra spaces or quotes around the key
+### Access Code Not Working
+- Make sure there are no spaces before/after the code
+- Codes are case-sensitive
+- Check Admin panel Login Activity for failure reason
 
-### Issue: Frontend can't connect to backend
-**Solution:**
-- Ensure backend is running on port 8000
-- Check browser console for CORS errors
-- Verify `http://localhost:5173` is in CORS allowed origins
+### Frontend Can't Connect to Backend
+- Ensure backend is running (`http://localhost:8000/health` should work)
+- Check browser console for errors
+- Verify `.env` has correct `VITE_API_BASE_URL`
 
-## Testing the Features
+### Data Not Saving
+- Check that `data/` directory exists in backend folder
+- Ensure write permissions on `data/` directory
+- Check backend logs for errors
 
-### Tasks
-1. Create a task with high priority
-2. Update its status to "in_progress"
-3. Mark it as completed
+### AI Features Not Working
+- Verify `ANTHROPIC_API_KEY` is set in backend `.env`
+- Check API key is valid at https://console.anthropic.com/
+- Review backend logs for API errors
 
-### Calendar
-1. Create an all-day event for tomorrow
-2. Create a timed event with start and end times
-3. View your upcoming events
+## 🚢 Deploying Your Changes
 
-### Reminders
-1. Set a reminder for 5 minutes from now
-2. Mark a reminder as completed
-3. View upcoming reminders
+### To Production (Render + Netlify)
 
-### Knowledge Base
-1. Add a note with some useful information
-2. Categorize it and add tags
-3. Search for it using keywords
+Changes deploy automatically when pushed to GitHub:
 
-### Documents
-1. Add a reference to a local file or URL
-2. Categorize by file type
-3. Search for documents
+```bash
+# Make your changes to code
+git add .
+git commit -m "Description of changes"
+git push origin main
+```
 
-### AI Chat
-1. Ask "Help me plan my day"
-2. Ask "What tasks are due soon?"
-3. Ask for productivity tips
+**What happens automatically:**
+1. GitHub receives your push
+2. Netlify rebuilds frontend (2-3 minutes)
+3. Render rebuilds backend (2-3 minutes)
+4. Changes go live at https://foxruntasks.netlify.app
 
-### Search
-1. Enter a search term in the top bar
-2. View results across all categories
-3. Try AI search for intelligent analysis
+### Verify Deployment
 
-## Next Steps
+**Backend:**
+```bash
+curl https://fox-run-task-planner.onrender.com/health
+```
 
-- Read the full [README.md](README.md) for detailed documentation
-- Explore the API docs at http://localhost:8000/docs
-- Customize the application to your needs
-- Add your own features and components
+**Frontend:**
+Visit https://foxruntasks.netlify.app and test features
 
-## Getting Help
+## 📊 Understanding the Data
 
-- Check the README.md for detailed documentation
-- Review API documentation at http://localhost:8000/docs
-- Check backend logs for error messages
-- Check browser console for frontend issues
+All data is stored in JSON files in the `backend/data/` directory:
 
-## Stopping the Application
+- `access_codes.json` - Authentication codes (hashed)
+- `login_attempts.json` - Audit trail of all logins
+- `tasks.json` - All task data
+- `calendar.json` - Calendar events
+- `reminders.json` - Reminders
+- `knowledge.json` - Knowledge base articles
+- `documents.json` - Document references
+- `feedback.json` - User feedback
+- `team.json` - Team member configuration
+- `task_templates.json` - Task templates
 
-If you used `./start.sh`, press `Ctrl+C` to stop both services.
+**Backup Strategy:** Admin can download any data type as JSON from the Database Viewer.
 
-If running manually, press `Ctrl+C` in each terminal window.
+## 🎓 Learning More
 
----
+### Explore the API
+Visit http://localhost:8000/docs to see:
+- All available endpoints
+- Request/response formats
+- Try endpoints interactively
 
-Enjoy your new productivity suite powered by Claude AI!
+### Read the Code
+- **Backend routers**: `backend/app/routers/` - Each feature has its own router
+- **Frontend components**: `frontend/src/components/` - React components
+- **API client**: `frontend/src/services/api.js` - How frontend talks to backend
+
+### Key Files to Understand
+- `backend/app/main.py` - Backend entry point
+- `backend/app/security.py` - JWT authentication
+- `backend/app/services/json_storage.py` - Data persistence
+- `frontend/src/App.jsx` - Frontend entry point
+- `frontend/src/components/AdminPanel.jsx` - Admin features
+
+## 📚 Next Steps
+
+1. **Customize for your family:**
+   - Update team members in Admin panel
+   - Create task templates for recurring activities
+   - Add your common calendar events
+
+2. **Explore advanced features:**
+   - AI-powered search
+   - Workload tracking
+   - Knowledge base organization
+
+3. **Learn the architecture:**
+   - Read `ARCHITECTURE.md` for system design
+   - Review `README.md` for comprehensive docs
+
+4. **Contribute improvements:**
+   - Add new features
+   - Fix bugs
+   - Enhance UI/UX
+
+## 💡 Tips for Success
+
+1. **Set up task templates** for recurring work (daily check-ins, weekly reviews, etc.)
+2. **Use due dates** consistently so workload tracking works correctly
+3. **Archive completed tasks** regularly to keep lists clean
+4. **Check Dashboard daily** to see team capacity and priorities
+5. **Use AI chat** to get productivity suggestions
+6. **Administrators should review Login Activity** weekly for security
+
+## 🆘 Getting Help
+
+- **System issues**: Check Admin panel → Login Activity
+- **API errors**: Check backend logs or `/docs`
+- **Frontend issues**: Check browser console (F12)
+- **Need a feature**: Submit via Feedback tile
+- **Security concerns**: Contact admin immediately
+
+## 🎉 You're Ready!
+
+Your Fox Run Task Tracker is now running. Start managing tasks, tracking workload, and boosting your family's productivity!
+
+**Remember:**
+- Production: https://foxruntasks.netlify.app
+- Local: http://localhost:5173
+- API Docs: http://localhost:8000/docs
+
+Happy tracking! 📋✨
