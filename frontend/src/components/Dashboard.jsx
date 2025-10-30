@@ -41,7 +41,13 @@ const Dashboard = () => {
         }
       });
 
-      dueSoon.sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+      // Sort by priority first (urgent > high > medium > low), then by due date
+      const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
+      dueSoon.sort((a, b) => {
+        const priorityDiff = (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
+        if (priorityDiff !== 0) return priorityDiff;
+        return new Date(a.due_date) - new Date(b.due_date);
+      });
 
       setTaskStats({
         byPriority: priorityCounts,
