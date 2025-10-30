@@ -109,6 +109,8 @@ const AccessCodeManagementTile = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [newCode, setNewCode] = useState({ code: '', label: '', role: 'member' });
+  const [editingId, setEditingId] = useState(null);
+  const [editLabel, setEditLabel] = useState('');
 
   const fetchAccessCodes = async () => {
     try {
@@ -177,6 +179,34 @@ const AccessCodeManagementTile = () => {
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       setError('Failed to delete access code.');
+    }
+  };
+
+  const handleStartEdit = (code) => {
+    setEditingId(code.id);
+    setEditLabel(code.label);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditLabel('');
+  };
+
+  const handleSaveEdit = async (codeId) => {
+    if (!editLabel.trim()) {
+      setError('Label cannot be empty.');
+      return;
+    }
+
+    try {
+      await adminAPI.updateAccessCode(codeId, { label: editLabel });
+      setSuccessMessage('Label updated successfully!');
+      setEditingId(null);
+      setEditLabel('');
+      fetchAccessCodes();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to update label.');
     }
   };
 
@@ -279,13 +309,24 @@ const AccessCodeManagementTile = () => {
                   {accessCodes.map((code) => (
                     <tr key={code.id} className="border-t border-gray-200">
                       <td className="py-2 pr-4 font-medium text-gray-800">
-                        {code.label}
+                        {editingId === code.id ? (
+                          <input
+                            type="text"
+                            value={editLabel}
+                            onChange={(e) => setEditLabel(e.target.value)}
+                            className="px-2 py-1 border border-gray-300 rounded text-sm w-full"
+                            autoFocus
+                          />
+                        ) : (
+                          code.label
+                        )}
                       </td>
                       <td className="py-2 pr-4">
                         <select
                           value={code.role}
                           onChange={(e) => handleUpdateRole(code.id, e.target.value)}
                           className="px-2 py-1 border border-gray-300 rounded text-sm bg-white"
+                          disabled={editingId === code.id}
                         >
                           <option value="member">Member</option>
                           <option value="admin">Admin</option>
@@ -300,6 +341,7 @@ const AccessCodeManagementTile = () => {
                               : 'bg-red-100 text-red-700 hover:bg-red-200'
                           }`}
                           type="button"
+                          disabled={editingId === code.id}
                         >
                           {code.is_active ? 'Active' : 'Inactive'}
                         </button>
@@ -308,13 +350,41 @@ const AccessCodeManagementTile = () => {
                         {code.created_at ? new Date(code.created_at).toLocaleDateString() : 'N/A'}
                       </td>
                       <td className="py-2 pr-4">
-                        <button
-                          onClick={() => handleDeleteAccessCode(code.id)}
-                          className="text-red-600 hover:text-red-800 text-xs font-semibold"
-                          type="button"
-                        >
-                          Delete
-                        </button>
+                        {editingId === code.id ? (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleSaveEdit(code.id)}
+                              className="text-green-600 hover:text-green-800 text-xs font-semibold"
+                              type="button"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={handleCancelEdit}
+                              className="text-gray-600 hover:text-gray-800 text-xs font-semibold"
+                              type="button"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleStartEdit(code)}
+                              className="text-blue-600 hover:text-blue-800 text-xs font-semibold"
+                              type="button"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteAccessCode(code.id)}
+                              className="text-red-600 hover:text-red-800 text-xs font-semibold"
+                              type="button"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
