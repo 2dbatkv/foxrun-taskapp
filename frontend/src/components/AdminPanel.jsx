@@ -102,6 +102,232 @@ const LoginAttemptsTile = () => {
   );
 };
 
+const AccessCodeManagementTile = () => {
+  const [accessCodes, setAccessCodes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newCode, setNewCode] = useState({ code: '', label: '', role: 'member' });
+
+  const fetchAccessCodes = async () => {
+    try {
+      setLoading(true);
+      const response = await adminAPI.getAccessCodes();
+      setAccessCodes(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load access codes.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccessCodes();
+  }, []);
+
+  const handleCreateAccessCode = async () => {
+    if (!newCode.code || !newCode.label) {
+      setError('Code and label are required.');
+      return;
+    }
+
+    try {
+      await adminAPI.createAccessCode(newCode);
+      setSuccessMessage('Access code created successfully!');
+      setNewCode({ code: '', label: '', role: 'member' });
+      setShowAddForm(false);
+      fetchAccessCodes();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to create access code.');
+    }
+  };
+
+  const handleUpdateRole = async (codeId, newRole) => {
+    try {
+      await adminAPI.updateAccessCode(codeId, { role: newRole });
+      setSuccessMessage('Access code updated successfully!');
+      fetchAccessCodes();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to update access code.');
+    }
+  };
+
+  const handleToggleActive = async (codeId, currentStatus) => {
+    try {
+      await adminAPI.updateAccessCode(codeId, { is_active: !currentStatus });
+      setSuccessMessage('Access code status updated!');
+      fetchAccessCodes();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to update access code status.');
+    }
+  };
+
+  const handleDeleteAccessCode = async (codeId) => {
+    if (!confirm('Are you sure you want to delete this access code? This cannot be undone.')) return;
+
+    try {
+      await adminAPI.deleteAccessCode(codeId);
+      setSuccessMessage('Access code deleted successfully!');
+      fetchAccessCodes();
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to delete access code.');
+    }
+  };
+
+  return (
+    <Tile
+      title="User Access Code Management"
+      className="lg:col-span-3"
+      actions={
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+            type="button"
+          >
+            {showAddForm ? 'Cancel' : 'Add User'}
+          </button>
+          <button
+            onClick={fetchAccessCodes}
+            className="text-blue-500 hover:text-blue-700 text-sm"
+            type="button"
+          >
+            Refresh
+          </button>
+        </div>
+      }
+    >
+      {loading ? (
+        <p className="text-gray-500">Loading access codes...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <div>
+          {successMessage && (
+            <div className="mb-3 p-2 bg-green-100 text-green-700 rounded text-sm">
+              {successMessage}
+            </div>
+          )}
+
+          {showAddForm && (
+            <div className="mb-4 p-4 border border-gray-300 rounded-md bg-gray-50">
+              <h4 className="text-sm font-semibold text-gray-800 mb-3">Create New Access Code</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Access Code</label>
+                  <input
+                    type="text"
+                    value={newCode.code}
+                    onChange={(e) => setNewCode({ ...newCode, code: e.target.value })}
+                    placeholder="e.g., 1234ABC"
+                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Label/Name</label>
+                  <input
+                    type="text"
+                    value={newCode.label}
+                    onChange={(e) => setNewCode({ ...newCode, label: e.target.value })}
+                    placeholder="e.g., John Doe"
+                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 mb-1">Role</label>
+                  <select
+                    value={newCode.role}
+                    onChange={(e) => setNewCode({ ...newCode, role: e.target.value })}
+                    className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                  >
+                    <option value="member">Member</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+              <button
+                onClick={handleCreateAccessCode}
+                className="mt-3 bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600"
+                type="button"
+              >
+                Create Access Code
+              </button>
+            </div>
+          )}
+
+          {accessCodes.length === 0 ? (
+            <p className="text-gray-500">No access codes found.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="text-left text-gray-600">
+                    <th className="py-2 pr-4">Label/Name</th>
+                    <th className="py-2 pr-4">Role</th>
+                    <th className="py-2 pr-4">Status</th>
+                    <th className="py-2 pr-4">Created</th>
+                    <th className="py-2 pr-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {accessCodes.map((code) => (
+                    <tr key={code.id} className="border-t border-gray-200">
+                      <td className="py-2 pr-4 font-medium text-gray-800">
+                        {code.label}
+                      </td>
+                      <td className="py-2 pr-4">
+                        <select
+                          value={code.role}
+                          onChange={(e) => handleUpdateRole(code.id, e.target.value)}
+                          className="px-2 py-1 border border-gray-300 rounded text-sm bg-white"
+                        >
+                          <option value="member">Member</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <button
+                          onClick={() => handleToggleActive(code.id, code.is_active)}
+                          className={`px-2 py-1 rounded text-xs font-semibold ${
+                            code.is_active
+                              ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                              : 'bg-red-100 text-red-700 hover:bg-red-200'
+                          }`}
+                          type="button"
+                        >
+                          {code.is_active ? 'Active' : 'Inactive'}
+                        </button>
+                      </td>
+                      <td className="py-2 pr-4 text-gray-500 text-xs">
+                        {code.created_at ? new Date(code.created_at).toLocaleDateString() : 'N/A'}
+                      </td>
+                      <td className="py-2 pr-4">
+                        <button
+                          onClick={() => handleDeleteAccessCode(code.id)}
+                          className="text-red-600 hover:text-red-800 text-xs font-semibold"
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+    </Tile>
+  );
+};
+
 const FeedbackListTile = () => {
   const [feedbackReports, setFeedbackReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1023,6 +1249,7 @@ const AdminPanel = ({ onBack, onLogout }) => {
       <main className="max-w-7xl mx-auto px-4 py-6">
         <TileLayout>
           <LoginAttemptsTile />
+          <AccessCodeManagementTile />
           <TeamManagementTile />
           <TaskTemplateLibraryTile />
           <ArchivedTasksTile />

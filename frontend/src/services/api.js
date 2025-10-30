@@ -129,6 +129,9 @@ export const taskTemplatesAPI = {
 export const adminAPI = {
   getLoginAttempts: (limit = 100) => api.get('/admin/login-attempts', { params: { limit } }),
   getAccessCodes: () => api.get('/admin/access-codes'),
+  createAccessCode: (data) => api.post('/admin/access-codes', data),
+  updateAccessCode: (id, data) => api.put(`/admin/access-codes/${id}`, data),
+  deleteAccessCode: (id) => api.delete(`/admin/access-codes/${id}`),
   getTeamMembers: () => api.get('/admin/team'),
   updateTeamMembers: (teamData) => api.put('/admin/team', teamData),
   getDatabaseTypes: () => api.get('/admin/database'),
