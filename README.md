@@ -61,8 +61,8 @@ Fox Run Task Tracker is a family-oriented productivity system currently used by 
 ## 🚀 Live Deployment
 
 - **Production URL**: https://foxruntasks.netlify.app
-- **Backend API**: https://fox-run-task-planner.onrender.com
-- **API Documentation**: https://fox-run-task-planner.onrender.com/docs
+- **Backend API**: https://foxrun-taskapp-backend.onrender.com
+- **API Documentation**: https://foxrun-taskapp-backend.onrender.com/docs
 
 ### Access Codes
 The system uses 6 access codes for family members:
