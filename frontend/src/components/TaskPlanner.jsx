@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Edit2, Trash2, Archive } from 'lucide-react';
+import { Plus, X, Edit2, Trash2, Archive, Filter } from 'lucide-react';
 import Tile from './Tile';
-import { tasksAPI, taskTemplatesAPI } from '../services/api';
+import { tasksAPI, taskTemplatesAPI, teamAPI } from '../services/api';
 
 const TaskPlanner = () => {
   const [tasks, setTasks] = useState([]);
   const [templates, setTemplates] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [filterAssignee, setFilterAssignee] = useState('');
+  const [sortBy, setSortBy] = useState('status');
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const initialFormState = {
@@ -24,6 +27,7 @@ const TaskPlanner = () => {
   useEffect(() => {
     fetchTasks();
     fetchTemplates();
+    fetchTeamMembers();
   }, []);
 
   const fetchTasks = async () => {
@@ -41,6 +45,15 @@ const TaskPlanner = () => {
       setTemplates(response.data.templates || []);
     } catch (error) {
       console.error('Error fetching templates:', error);
+    }
+  };
+
+  const fetchTeamMembers = async () => {
+    try {
+      const response = await teamAPI.getAll();
+      setTeamMembers(response.data.team || []);
+    } catch (error) {
+      console.error('Error fetching team members:', error);
     }
   };
 
@@ -173,17 +186,53 @@ const TaskPlanner = () => {
     return `${hours}h ${mins}m`;
   };
 
+  // Filter and sort tasks
+  const getFilteredAndSortedTasks = () => {
+    let filteredTasks = [...tasks];
+
+    // Apply assignee filter
+    if (filterAssignee) {
+      filteredTasks = filteredTasks.filter(task => task.assignee === filterAssignee);
+    }
+
+    // Apply sorting
+    filteredTasks.sort((a, b) => {
+      if (sortBy === 'status') {
+        // Sort by status: todo, in_progress, cancelled, completed
+        const statusOrder = { todo: 1, in_progress: 2, cancelled: 3, completed: 4 };
+        return statusOrder[a.status] - statusOrder[b.status];
+      } else if (sortBy === 'due_date') {
+        // Sort by due date (earliest first, null dates last)
+        if (!a.due_date) return 1;
+        if (!b.due_date) return -1;
+        return new Date(a.due_date) - new Date(b.due_date);
+      } else if (sortBy === 'priority') {
+        // Sort by priority: urgent, high, medium, low
+        const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return 0;
+    });
+
+    return filteredTasks;
+  };
+
+  const filteredTasks = getFilteredAndSortedTasks();
+  const taskCount = filteredTasks.length;
+
   return (
     <Tile
       title="Task Planner"
       actions={
-        <button
-          onClick={() => (showForm ? resetForm() : openForm())}
-          className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-1"
-        >
-          {showForm ? <X size={16} /> : <Plus size={16} />}
-          {showForm ? 'Cancel' : 'New Task'}
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => (showForm ? resetForm() : openForm())}
+            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-1"
+          >
+            {showForm ? <X size={16} /> : <Plus size={16} />}
+            {showForm ? 'Cancel' : 'New Task'}
+          </button>
+        </div>
       }
     >
       {showForm && (
@@ -293,17 +342,61 @@ const TaskPlanner = () => {
         <p className="text-sm text-green-600 mb-3">{formSuccess}</p>
       )}
 
+      {/* Filter and Sort Controls */}
+      <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex items-center gap-2 mb-2">
+          <Filter size={16} className="text-gray-600" />
+          <span className="text-sm font-medium text-gray-700">Filter & Sort</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Filter by Assignee */}
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Filter by Assignee</label>
+            <select
+              value={filterAssignee}
+              onChange={(e) => setFilterAssignee(e.target.value)}
+              className="w-full p-2 border rounded text-sm"
+            >
+              <option value="">All Tasks ({tasks.length})</option>
+              {teamMembers.map((member) => {
+                const memberTaskCount = tasks.filter(t => t.assignee === member.name).length;
+                return (
+                  <option key={member.name} value={member.name}>
+                    {member.name} ({memberTaskCount})
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* Sort By */}
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Sort By</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full p-2 border rounded text-sm"
+            >
+              <option value="status">Status (Default)</option>
+              <option value="due_date">Due Date (Earliest First)</option>
+              <option value="priority">Priority (Highest First)</option>
+            </select>
+          </div>
+        </div>
+        {filterAssignee && (
+          <div className="mt-2 text-xs text-gray-600">
+            Showing {taskCount} task{taskCount !== 1 ? 's' : ''} for {filterAssignee}
+          </div>
+        )}
+      </div>
+
       <div className="space-y-2">
         {tasks.length === 0 ? (
           <p className="text-gray-500 text-center py-4">No tasks yet. Create your first task!</p>
+        ) : filteredTasks.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">No tasks found for the selected filter.</p>
         ) : (
-          [...tasks]
-            .sort((a, b) => {
-              // Sort order: todo, in_progress, cancelled, completed
-              const statusOrder = { todo: 1, in_progress: 2, cancelled: 3, completed: 4 };
-              return statusOrder[a.status] - statusOrder[b.status];
-            })
-            .map((task) => (
+          filteredTasks.map((task) => (
             <div
               key={task.id}
               className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition"
