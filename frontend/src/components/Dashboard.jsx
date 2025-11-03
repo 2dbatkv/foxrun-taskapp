@@ -97,7 +97,7 @@ const Dashboard = () => {
       const workloadByPerson = {};
       teamMembers.forEach(member => {
         workloadByPerson[member.name] = {
-          total_assigned: 0,
+          capacity: member.daily_capacity_minutes * capacityMultiplier,
           completed: 0,
           role: member.role
         };
@@ -113,30 +113,25 @@ const Dashboard = () => {
                d.getDate() === now.getDate();
       };
 
-      // Calculate total assigned and completed minutes filtered by DUE DATE
+      // Sum up task times ONLY for completed tasks, filtered by DUE DATE
       tasks.forEach(task => {
-        // Skip tasks without assignee, due_date, or cancelled tasks
-        if (!task.assignee || !task.due_date || task.status === 'cancelled') return;
-
-        const taskMinutes = task.time_to_complete_minutes || 0;
-        let inRange = false;
+        // Only count completed tasks with an assignee and due_date
+        if (!task.assignee || task.status !== 'completed' || !task.due_date) return;
 
         if (workloadTimeRange === 'daily') {
-          // Daily view: only count tasks DUE today
-          inRange = isToday(task.due_date);
+          // Daily view: only count completed tasks that were DUE today
+          if (isToday(task.due_date)) {
+            if (workloadByPerson[task.assignee]) {
+              workloadByPerson[task.assignee].completed += task.time_to_complete_minutes || 0;
+            }
+          }
         } else {
-          // Weekly view: only count tasks DUE this week
+          // Weekly view: only count completed tasks that were DUE this week
           const dueDate = new Date(task.due_date);
-          inRange = dueDate >= startDate && dueDate <= endDate;
-        }
-
-        if (inRange && workloadByPerson[task.assignee]) {
-          // Add to total assigned for all non-cancelled tasks
-          workloadByPerson[task.assignee].total_assigned += taskMinutes;
-
-          // Add to completed only if task is completed
-          if (task.status === 'completed') {
-            workloadByPerson[task.assignee].completed += taskMinutes;
+          if (dueDate >= startDate && dueDate <= endDate) {
+            if (workloadByPerson[task.assignee]) {
+              workloadByPerson[task.assignee].completed += task.time_to_complete_minutes || 0;
+            }
           }
         }
       });
@@ -144,10 +139,10 @@ const Dashboard = () => {
       // Convert to array for rendering
       const workloadArray = Object.entries(workloadByPerson).map(([name, data]) => ({
         name,
-        total_assigned: data.total_assigned,
+        capacity: data.capacity,
         completed: data.completed,
         role: data.role,
-        percentage: data.total_assigned > 0 ? Math.round((data.completed / data.total_assigned) * 100) : 0
+        percentage: data.capacity > 0 ? Math.round((data.completed / data.capacity) * 100) : 0
       }));
 
       setTeamWorkload(workloadArray);
