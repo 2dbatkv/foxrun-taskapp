@@ -97,8 +97,8 @@ const Dashboard = () => {
       const workloadByPerson = {};
       teamMembers.forEach(member => {
         workloadByPerson[member.name] = {
-          capacity: member.daily_capacity_minutes * capacityMultiplier,
-          assigned: 0,
+          total_assigned: 0,
+          completed: 0,
           role: member.role
         };
       });
@@ -113,25 +113,30 @@ const Dashboard = () => {
                d.getDate() === now.getDate();
       };
 
-      // Sum up task times ONLY for completed tasks, filtered by DUE DATE
+      // Calculate total assigned and completed minutes filtered by DUE DATE
       tasks.forEach(task => {
-        // Only count completed tasks with an assignee and due_date
-        if (!task.assignee || task.status !== 'completed' || !task.due_date) return;
+        // Skip tasks without assignee, due_date, or cancelled tasks
+        if (!task.assignee || !task.due_date || task.status === 'cancelled') return;
+
+        const taskMinutes = task.time_to_complete_minutes || 0;
+        let inRange = false;
 
         if (workloadTimeRange === 'daily') {
-          // Daily view: only count completed tasks that were DUE today
-          if (isToday(task.due_date)) {
-            if (workloadByPerson[task.assignee]) {
-              workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
-            }
-          }
+          // Daily view: only count tasks DUE today
+          inRange = isToday(task.due_date);
         } else {
-          // Weekly view: only count completed tasks that were DUE this week
+          // Weekly view: only count tasks DUE this week
           const dueDate = new Date(task.due_date);
-          if (dueDate >= startDate && dueDate <= endDate) {
-            if (workloadByPerson[task.assignee]) {
-              workloadByPerson[task.assignee].assigned += task.time_to_complete_minutes || 0;
-            }
+          inRange = dueDate >= startDate && dueDate <= endDate;
+        }
+
+        if (inRange && workloadByPerson[task.assignee]) {
+          // Add to total assigned for all non-cancelled tasks
+          workloadByPerson[task.assignee].total_assigned += taskMinutes;
+
+          // Add to completed only if task is completed
+          if (task.status === 'completed') {
+            workloadByPerson[task.assignee].completed += taskMinutes;
           }
         }
       });
@@ -139,10 +144,10 @@ const Dashboard = () => {
       // Convert to array for rendering
       const workloadArray = Object.entries(workloadByPerson).map(([name, data]) => ({
         name,
-        capacity: data.capacity,
-        assigned: data.assigned,
+        total_assigned: data.total_assigned,
+        completed: data.completed,
         role: data.role,
-        percentage: data.capacity > 0 ? Math.round((data.assigned / data.capacity) * 100) : 0
+        percentage: data.total_assigned > 0 ? Math.round((data.completed / data.total_assigned) * 100) : 0
       }));
 
       setTeamWorkload(workloadArray);
@@ -196,10 +201,10 @@ const Dashboard = () => {
   };
 
   const getWorkloadColor = (percentage) => {
-    if (percentage >= 100) return 'bg-red-500';
-    if (percentage >= 80) return 'bg-orange-500';
+    if (percentage >= 100) return 'bg-green-500';
+    if (percentage >= 80) return 'bg-blue-500';
     if (percentage >= 60) return 'bg-yellow-500';
-    return 'bg-green-500';
+    return 'bg-gray-400';
   };
 
   return (
@@ -365,9 +370,7 @@ const Dashboard = () => {
                       <span className="text-gray-500">({member.role})</span>
                     </div>
                     <div className="text-right">
-                      <span className="font-semibold">{formatMinutesToHours(member.assigned)}</span>
-                      <span className="text-gray-500"> / {formatMinutesToHours(member.capacity)}</span>
-                      <span className={`ml-2 font-bold ${member.percentage >= 100 ? 'text-red-600' : member.percentage >= 80 ? 'text-orange-600' : 'text-green-600'}`}>
+                      <span className={`font-bold text-lg ${member.percentage >= 100 ? 'text-green-600' : member.percentage >= 80 ? 'text-blue-600' : member.percentage >= 60 ? 'text-yellow-600' : 'text-gray-600'}`}>
                         {member.percentage}%
                       </span>
                     </div>
