@@ -37,3 +37,7 @@ data.sample.backup.*
 
 # OS
 Thumbs.db
+# Google Cloud Service Account Keys
+tasks/*.json
+*service-account*.json
+fox-run-tasks-*.json
