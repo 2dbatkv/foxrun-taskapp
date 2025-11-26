@@ -52,6 +52,7 @@ export const tasksAPI = {
   getById: (id) => api.get(`/tasks/${id}`),
   create: (data) => api.post('/tasks/', data),
   update: (id, data) => api.put(`/tasks/${id}`, data),
+  complete: (id) => api.put(`/tasks/${id}/complete`),  // Mark task complete in Google Sheet
   archive: (id) => api.patch(`/tasks/${id}/archive`),
   unarchive: (id) => api.patch(`/tasks/${id}/unarchive`),
   delete: (id) => api.delete(`/tasks/${id}`),

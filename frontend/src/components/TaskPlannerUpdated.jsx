@@ -1,0 +1,548 @@
+import React, { useState, useEffect } from 'react';
+import { Plus, X, Edit2, Trash2, Archive, Filter, CheckCircle2 } from 'lucide-react';
+import Tile from './Tile';
+import { tasksAPI, taskTemplatesAPI, teamAPI } from '../services/api';
+
+const TaskPlanner = ({ user }) => {
+  const [tasks, setTasks] = useState([]);
+  const [templates, setTemplates] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [filterAssignee, setFilterAssignee] = useState('');
+  const [sortBy, setSortBy] = useState('status');
+  const [showForm, setShowForm] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const initialFormState = {
+    title: '',
+    description: '',
+    priority: 'medium',
+    status: 'todo',
+    due_date: '',
+    assignee: '',
+    time_to_complete_minutes: '',
+  };
+  const [formData, setFormData] = useState(initialFormState);
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+  const [completingTask, setCompletingTask] = useState(null);
+
+  // Check if user is admin
+  const isAdmin = user?.role === 'admin';
+
+  useEffect(() => {
+    fetchTasks();
+    fetchTemplates();
+    fetchTeamMembers();
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await tasksAPI.getAll();
+      setTasks(response.data);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await taskTemplatesAPI.getAll();
+      setTemplates(response.data.templates || []);
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+    }
+  };
+
+  const fetchTeamMembers = async () => {
+    try {
+      const response = await teamAPI.getAll();
+      setTeamMembers(response.data.team || []);
+    } catch (error) {
+      console.error('Error fetching team members:', error);
+    }
+  };
+
+  const handleTemplateSelect = (templateId) => {
+    if (!templateId) return;
+
+    const template = templates.find(t => t.id === parseInt(templateId));
+    if (template) {
+      setFormData({
+        ...formData,
+        title: template.title,
+        description: template.description || '',
+        priority: template.priority,
+        time_to_complete_minutes: template.time_to_complete_minutes?.toString() || '',
+      });
+    }
+  };
+
+  const handleComplete = async (taskId) => {
+    try {
+      setCompletingTask(taskId);
+      setFormError('');
+
+      // Call the new completion endpoint
+      await tasksAPI.complete(taskId);
+
+      // Show success message
+      setFormSuccess(`Task marked complete and synced to Google Sheet!`);
+
+      // Refresh tasks
+      await fetchTasks();
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setFormSuccess(''), 3000);
+
+    } catch (error) {
+      console.error('Error completing task:', error);
+      setFormError('Unable to mark task as complete. Please try again.');
+      setTimeout(() => setFormError(''), 5000);
+    } finally {
+      setCompletingTask(null);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const parsedTime = parseInt(formData.time_to_complete_minutes, 10);
+
+    if (Number.isNaN(parsedTime) || parsedTime <= 0) {
+      setFormError('Time to complete must be a positive number of minutes.');
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      time_to_complete_minutes: parsedTime,
+    };
+
+    try {
+      if (editingTask) {
+        await tasksAPI.update(editingTask.id, payload);
+      } else {
+        await tasksAPI.create(payload);
+      }
+      fetchTasks();
+      setFormSuccess(editingTask ? 'Task updated successfully.' : 'Task created successfully (Note: Admins should assign tasks in Google Sheet).');
+      resetForm();
+    } catch (error) {
+      console.error('Error saving task:', error);
+      setFormError('Unable to save task. Please try again.');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      try {
+        await tasksAPI.delete(id);
+        fetchTasks();
+      } catch (error) {
+        console.error('Error deleting task:', error);
+      }
+    }
+  };
+
+  const handleArchive = async (id) => {
+    if (window.confirm('Are you sure you want to archive this task?')) {
+      try {
+        await tasksAPI.archive(id);
+        setFormSuccess('Task archived successfully.');
+        fetchTasks();
+        setTimeout(() => setFormSuccess(''), 3000);
+      } catch (error) {
+        console.error('Error archiving task:', error);
+        setFormError('Unable to archive task. Please try again.');
+      }
+    }
+  };
+
+  const handleEdit = (task) => {
+    setFormError('');
+    setFormSuccess('');
+    setEditingTask(task);
+    setFormData({
+      title: task.title,
+      description: task.description || '',
+      priority: task.priority,
+      status: task.status,
+      due_date: task.due_date ? task.due_date.split('T')[0] : '',
+      assignee: task.assignee || '',
+      time_to_complete_minutes: task.time_to_complete_minutes?.toString() || '',
+    });
+    setShowForm(true);
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormState);
+    setEditingTask(null);
+    setShowForm(false);
+    setFormError('');
+  };
+
+  const openForm = () => {
+    setFormError('');
+    setFormSuccess('');
+    setEditingTask(null);
+    setFormData(initialFormState);
+    setShowForm(true);
+  };
+
+  const getPriorityColor = (priority) => {
+    const colors = {
+      low: 'bg-blue-100 text-blue-800',
+      medium: 'bg-yellow-100 text-yellow-800',
+      high: 'bg-orange-100 text-orange-800',
+      urgent: 'bg-red-100 text-red-800',
+    };
+    return colors[priority] || colors.medium;
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      todo: 'bg-gray-100 text-gray-800',
+      in_progress: 'bg-blue-100 text-blue-800',
+      completed: 'bg-green-100 text-green-800',
+      cancelled: 'bg-red-100 text-red-800',
+    };
+    return colors[status] || colors.todo;
+  };
+
+  const formatTimeToComplete = (minutes) => {
+    if (!minutes) return '';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours === 0) return `${mins}m`;
+    if (mins === 0) return `${hours}h`;
+    return `${hours}h ${mins}m`;
+  };
+
+  // Filter and sort tasks
+  const getFilteredAndSortedTasks = () => {
+    let filteredTasks = [...tasks];
+
+    // Apply assignee filter
+    if (filterAssignee) {
+      filteredTasks = filteredTasks.filter(task => task.assignee === filterAssignee);
+    }
+
+    // Apply sorting
+    filteredTasks.sort((a, b) => {
+      if (sortBy === 'status') {
+        // Sort by status: todo, in_progress, cancelled, completed
+        const statusOrder = { todo: 1, in_progress: 2, cancelled: 3, completed: 4 };
+        return statusOrder[a.status] - statusOrder[b.status];
+      } else if (sortBy === 'due_date') {
+        // Sort by due date (earliest first, null dates last)
+        if (!a.due_date) return 1;
+        if (!b.due_date) return -1;
+        return new Date(a.due_date) - new Date(b.due_date);
+      } else if (sortBy === 'priority') {
+        // Sort by priority: urgent, high, medium, low
+        const priorityOrder = { urgent: 1, high: 2, medium: 3, low: 4 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return 0;
+    });
+
+    return filteredTasks;
+  };
+
+  const filteredTasks = getFilteredAndSortedTasks();
+  const taskCount = filteredTasks.length;
+
+  return (
+    <Tile
+      title="Task Planner"
+      actions={
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Only show "New Task" button for admins with a note */}
+          {isAdmin && (
+            <button
+              onClick={() => (showForm ? resetForm() : openForm())}
+              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 flex items-center gap-1 text-sm"
+            >
+              {showForm ? <X size={16} /> : <Plus size={16} />}
+              {showForm ? 'Cancel' : 'New Task'}
+            </button>
+          )}
+          {isAdmin && !showForm && (
+            <span className="text-xs text-gray-500 italic">
+              (Assign tasks in Google Sheet)
+            </span>
+          )}
+        </div>
+      }
+    >
+      {/* Admin note about Google Sheets */}
+      {isAdmin && (
+        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>Note for Admins:</strong> New tasks should be added to the Google Sheet.
+            Tasks assigned there will automatically appear for the assigned user.
+          </p>
+        </div>
+      )}
+
+      {showForm && (
+        <form onSubmit={handleSubmit} className="mb-4 p-4 bg-gray-50 rounded-lg">
+          {!editingTask && templates.length > 0 && (
+            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Use a Template (Optional)
+              </label>
+              <select
+                onChange={(e) => handleTemplateSelect(e.target.value)}
+                className="w-full p-2 border rounded"
+                defaultValue=""
+              >
+                <option value="">-- Select a template to pre-fill --</option>
+                {templates.map((template) => (
+                  <option key={template.id} value={template.id}>
+                    {template.title} ({template.category} - {template.time_to_complete_minutes}min)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <input
+            type="text"
+            placeholder="Task title"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="w-full p-2 mb-2 border rounded"
+            required
+          />
+          <textarea
+            placeholder="Description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            className="w-full p-2 mb-2 border rounded"
+            rows="3"
+          />
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <select
+              value={formData.priority}
+              onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+              className="p-2 border rounded"
+            >
+              <option value="low">Low Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="high">High Priority</option>
+              <option value="urgent">Urgent</option>
+            </select>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              className="p-2 border rounded"
+            >
+              <option value="todo">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div className="mb-2">
+            <label className="block text-sm text-gray-600 mb-1" htmlFor="dueDate">
+              Due Date
+            </label>
+            <input
+              id="dueDate"
+              type="date"
+              value={formData.due_date}
+              onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <input
+            type="text"
+            placeholder="Assignee (e.g., Aaron)"
+            value={formData.assignee}
+            onChange={(e) => setFormData({ ...formData, assignee: e.target.value })}
+            className="w-full p-2 mb-2 border rounded"
+          />
+          <div className="mb-2">
+            <label className="block text-sm text-gray-600 mb-1" htmlFor="timeToComplete">
+              Time to Complete (minutes)
+            </label>
+            <input
+              id="timeToComplete"
+              type="number"
+              min="1"
+              step="1"
+              value={formData.time_to_complete_minutes}
+              onChange={(e) => setFormData({ ...formData, time_to_complete_minutes: e.target.value })}
+              className="w-full p-2 border rounded"
+              required
+            />
+          </div>
+          {formError && <p className="text-sm text-red-600 mb-2">{formError}</p>}
+          {formSuccess && <p className="text-sm text-green-600 mb-2">{formSuccess}</p>}
+          <button
+            type="submit"
+            className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+          >
+            {editingTask ? 'Update Task' : 'Create Task'}
+          </button>
+        </form>
+      )}
+
+      {!showForm && formSuccess && (
+        <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-800">{formSuccess}</p>
+        </div>
+      )}
+
+      {!showForm && formError && (
+        <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-800">{formError}</p>
+        </div>
+      )}
+
+      {/* Filter and Sort Controls */}
+      <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex items-center gap-2 mb-2">
+          <Filter size={16} className="text-gray-600" />
+          <span className="text-sm font-medium text-gray-700">Filter & Sort</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Filter by Assignee - only for admins */}
+          {isAdmin && (
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Filter by Assignee</label>
+              <select
+                value={filterAssignee}
+                onChange={(e) => setFilterAssignee(e.target.value)}
+                className="w-full p-2 border rounded text-sm"
+              >
+                <option value="">All Tasks ({tasks.length})</option>
+                {teamMembers.map((member) => {
+                  const memberTaskCount = tasks.filter(t => t.assignee === member.name).length;
+                  return (
+                    <option key={member.name} value={member.name}>
+                      {member.name} ({memberTaskCount})
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+
+          {/* Sort By */}
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Sort By</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full p-2 border rounded text-sm"
+            >
+              <option value="status">Status (Default)</option>
+              <option value="due_date">Due Date (Earliest First)</option>
+              <option value="priority">Priority (Highest First)</option>
+            </select>
+          </div>
+        </div>
+        {filterAssignee && (
+          <div className="mt-2 text-xs text-gray-600">
+            Showing {taskCount} task{taskCount !== 1 ? 's' : ''} for {filterAssignee}
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {tasks.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">
+            {isAdmin ? 'No tasks yet. Add tasks in the Google Sheet!' : 'No tasks assigned to you yet.'}
+          </p>
+        ) : filteredTasks.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">No tasks found for the selected filter.</p>
+        ) : (
+          filteredTasks.map((task) => (
+            <div
+              key={task.id}
+              className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-2 flex-1">
+                  {/* Completion checkbox - only for non-completed tasks */}
+                  {task.status !== 'completed' && (
+                    <button
+                      onClick={() => handleComplete(task.id)}
+                      disabled={completingTask === task.id}
+                      className={`flex-shrink-0 p-1 rounded hover:bg-green-100 transition ${
+                        completingTask === task.id ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      title="Mark as complete"
+                    >
+                      <CheckCircle2
+                        size={20}
+                        className={completingTask === task.id ? 'text-gray-400' : 'text-green-600'}
+                      />
+                    </button>
+                  )}
+                  <h3 className={`font-semibold ${task.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-800'}`}>
+                    {task.title}
+                  </h3>
+                </div>
+                <div className="flex gap-2 flex-shrink-0">
+                  {isAdmin && (
+                    <>
+                      <button
+                        onClick={() => handleEdit(task)}
+                        className="text-blue-500 hover:text-blue-700"
+                        title="Edit task"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleArchive(task.id)}
+                        className="text-orange-500 hover:text-orange-700"
+                        title="Archive task"
+                      >
+                        <Archive size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(task.id)}
+                        className="text-red-500 hover:text-red-700"
+                        title="Delete task"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+              {task.description && (
+                <p className="text-sm text-gray-600 mb-2 ml-7">{task.description}</p>
+              )}
+              <div className="flex gap-2 flex-wrap ml-7">
+                <span className={`text-xs px-2 py-1 rounded ${getPriorityColor(task.priority)}`}>
+                  {task.priority}
+                </span>
+                <span className={`text-xs px-2 py-1 rounded ${getStatusColor(task.status)}`}>
+                  {task.status.replace('_', ' ')}
+                </span>
+                {task.due_date && (
+                  <span className="text-xs px-2 py-1 rounded bg-purple-100 text-purple-800">
+                    Due: {new Date(task.due_date).toLocaleDateString()}
+                  </span>
+                )}
+                {task.assignee && (
+                  <span className="text-xs px-2 py-1 rounded bg-indigo-100 text-indigo-800">
+                    Assignee: {task.assignee}
+                  </span>
+                )}
+                {task.time_to_complete_minutes && (
+                  <span className="text-xs px-2 py-1 rounded bg-teal-100 text-teal-800">
+                    Time: {formatTimeToComplete(task.time_to_complete_minutes)}
+                  </span>
+                )}
+              </div>
+            </div>
+            ))
+        )}
+      </div>
+    </Tile>
+  );
+};
+
+export default TaskPlanner;
